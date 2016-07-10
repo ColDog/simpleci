@@ -1,6 +1,7 @@
 class Repo < ApplicationRecord
-  belongs_to :team
-  belongs_to :user
+  belongs_to :team,   optional: true
+  belongs_to :user,   optional: true
+  belongs_to :config, optional: true
   has_many :jobs
 
   def enqueue_job(branch)
@@ -10,6 +11,10 @@ class Repo < ApplicationRecord
         job_id: next_id,
         key: "#{name}.#{branch}.#{next_id}",
     )
+  end
+
+  def last_job
+    jobs.last
   end
 
 end

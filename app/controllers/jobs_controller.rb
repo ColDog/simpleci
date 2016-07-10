@@ -1,11 +1,13 @@
 class JobsController < ApplicationController
 
-  def update
-    render json: Job.find_by!(key: params[:key]).update!(safe_params)
+  def create
+    render json: Job.poll
   end
 
-  def poll
-    render json: Job.poll
+  def update
+    job = Job.find_by!(key: params[:id])
+    job.update!(safe_params)
+    render json: job
   end
 
   protected

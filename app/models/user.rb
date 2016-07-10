@@ -2,13 +2,12 @@ class User < ApplicationRecord
   has_many :members
   has_many :teams, through: :members
   has_many :repos
+  has_many :configs
 
   def self.from_omniauth(auth)
-    puts auth
-    find_or_update_by!(
-        {provider: auth.provider, uid: auth.uid},
-        {name: auth.info.name, token: auth.credentials.token, email: auth.info.email}
-    )
+    find_or_update_by!({provider: auth.provider, uid: auth.uid}, {
+        name: auth.info.name, token: auth.credentials.token, email: auth.info.email
+    })
   end
 
   def repos
@@ -19,7 +18,12 @@ class User < ApplicationRecord
   end
 
   def sync
-
+    client.teams.each do |team|
+      unless user.teams.find_by(name: team[:name])
+        team = Team.create!(name: team[:name])
+        Member.create!(team_id: team.id, user_id: id)
+      end
+    end
   end
 
   def client

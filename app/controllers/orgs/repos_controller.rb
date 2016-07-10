@@ -1,4 +1,4 @@
-class ReposController < ApplicationController
+class Orgs::ReposController < ApplicationController
 
   def index
     render json: @base.repos
