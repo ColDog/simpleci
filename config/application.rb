@@ -28,5 +28,6 @@ module Simpleci
     # config.api_only = true
     # config.middleware.use ActionDispatch::Session::CookieStore
     config.autoload_paths += %W(#{config.root}/app/clients)
+    config.autoload_paths += %W(#{config.root}/app/commands)
   end
 end

@@ -5,12 +5,7 @@ class Repo < ApplicationRecord
   has_many :jobs
 
   def enqueue_job(branch='master')
-    next_id = jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
-    jobs.create!(
-        branch: branch,
-        job_id: next_id,
-        key: "#{name}_#{branch}_#{next_id}",
-    )
+    EnqueueJobCommand.new(repo).run(branch)
   end
 
   def config_body

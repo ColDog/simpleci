@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     find_or_update_by!({provider: auth.provider, uid: auth.uid}, {
-        name: auth.info.name, token: auth.credentials.token, email: auth.info.email
+        name: auth.info.name, token: auth.credentials.token, email: auth.info.email, username: auth.info.nickname
     })
   end
 
@@ -46,7 +46,7 @@ class User < ApplicationRecord
   end
 
   def github
-    GithubClient.new(token)
+    GithubClient.new(username, token)
   end
 
 end

@@ -1,7 +1,8 @@
 class GithubClient
 
-  def initialize(token)
+  def initialize(username, token)
     @token = token
+    @username = username
   end
 
   def teams
@@ -10,8 +11,18 @@ class GithubClient
     end
   end
 
-  def register_webhook(username, repo)
-    req(:post, "/repos/#{username}/#{repo}/hooks", {
+  def file(repo, path)
+    res = req(:get, "/repos/#{@username}/#{repo}/contents/#{path}")
+    Base64.decode64(res['content']) if res['content']
+  end
+
+  def ci_yml(repo)
+    res = file(repo, 'ci.yml')
+    HashWithIndifferentAccess.new(YAML.load(res)) if res
+  end
+
+  def register_webhook(repo)
+    req(:post, "/repos/#{@username}/#{repo}/hooks", {
         name: "cisimple-hook-#{repo}",
         active: true,
         events: ['push'],
@@ -23,6 +34,7 @@ class GithubClient
   end
 
   def req(method, url, params={})
+    puts "#{method}  https://api.github.com/#{url}"
     res = conn.send(method, url, params)
     JSON.parse(res.body)
   end

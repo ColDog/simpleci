@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
     t.integer  "job_id",                                   null: false
     t.string   "key",                                      null: false
     t.string   "branch"
+    t.json     "build",                                    null: false
     t.string   "worker"
     t.boolean  "complete",                 default: false
     t.boolean  "cancelled",                default: false
@@ -72,6 +73,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
     t.string   "name"
+    t.string   "username"
     t.string   "provider"
     t.string   "token"
     t.string   "uid"
