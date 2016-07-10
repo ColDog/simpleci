@@ -13,8 +13,8 @@ class Job < ApplicationRecord
     end
   end
 
-  def config
-    repo.config.try(:config)
+  def config_body
+    repo.config.try(:body)
   end
 
   def cancel

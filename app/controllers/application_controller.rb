@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
     if params[:account_id] == 'me'
       @base = current_user
     else
-      @base = current_user.teams.find(params[:base_id])
+      @base = current_user.teams.find(params[:account_id])
     end
   end
 

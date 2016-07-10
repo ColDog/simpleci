@@ -4,7 +4,7 @@ class CreateConfigs < ActiveRecord::Migration[5.0]
       t.references :user, foreign_key: true
       t.references :team, foreign_key: true
       t.string :name
-      t.json :config
+      t.json :body
 
       t.timestamps
     end

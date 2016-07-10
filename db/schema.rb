@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
     t.integer  "user_id"
     t.integer  "team_id"
     t.string   "name"
-    t.json     "config"
+    t.json     "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_configs_on_team_id", using: :btree

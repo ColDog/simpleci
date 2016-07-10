@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   # routes from the current user
-  get   '/user/sync'                => 'users#sync'
+  post  '/user/sync'                => 'users#sync'
   get   '/user/teams'               => 'users#teams'
   get   '/user'                     => 'users#current'
 

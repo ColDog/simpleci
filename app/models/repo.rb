@@ -13,6 +13,10 @@ class Repo < ApplicationRecord
     )
   end
 
+  def config_body
+    config.try(:body)
+  end
+
   def last_job
     jobs.last
   end
