@@ -12,11 +12,22 @@
 
 ActiveRecord::Schema.define(version: 20160709234440) do
 
+  create_table "configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "team_id"
+    t.string   "name"
+    t.json     "config"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_configs_on_team_id", using: :btree
+    t.index ["user_id"], name: "index_configs_on_user_id", using: :btree
+  end
+
   create_table "jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "repo_id"
-    t.string   "branch"
     t.integer  "job_id",                                   null: false
     t.string   "key",                                      null: false
+    t.string   "branch"
     t.string   "worker"
     t.boolean  "complete",                 default: false
     t.boolean  "cancelled",                default: false
@@ -40,12 +51,14 @@ ActiveRecord::Schema.define(version: 20160709234440) do
   end
 
   create_table "repos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.string   "provider"
+    t.string   "name",       null: false
+    t.string   "provider",   null: false
     t.integer  "team_id"
     t.integer  "user_id"
+    t.integer  "config_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["config_id"], name: "index_repos_on_config_id", using: :btree
     t.index ["team_id"], name: "index_repos_on_team_id", using: :btree
     t.index ["user_id"], name: "index_repos_on_user_id", using: :btree
   end
@@ -66,9 +79,12 @@ ActiveRecord::Schema.define(version: 20160709234440) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "configs", "teams"
+  add_foreign_key "configs", "users"
   add_foreign_key "jobs", "repos"
   add_foreign_key "members", "teams"
   add_foreign_key "members", "users"
+  add_foreign_key "repos", "configs"
   add_foreign_key "repos", "teams"
   add_foreign_key "repos", "users"
 end
