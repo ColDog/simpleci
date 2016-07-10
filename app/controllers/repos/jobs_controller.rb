@@ -6,7 +6,8 @@ class Repos::JobsController < ApplicationController
   end
 
   def create
-    render json: @repo.enqueue_job(params[:job].try(:[], :branch))
+    branch = params[:job].try(:[], :branch)
+    render json: EnqueueJobCommand.new(current_user, @repo).run(branch)
   end
 
   def show

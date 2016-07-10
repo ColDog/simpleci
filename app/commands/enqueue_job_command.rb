@@ -7,9 +7,12 @@ class EnqueueJobCommand
   end
 
   def run(branch='master')
+    jobs = []
     builds.each do |build|
-      enqueue branch, build
+      jobs << enqueue(branch, build)
     end
+
+    {jobs: jobs}
   end
 
   def enqueue(branch, build)
@@ -46,12 +49,16 @@ class EnqueueJobCommand
   end
 
   def merge_config(current, parent)
+    return current unless parent
+
     merge_ary(current, :env, parent)
     merge_ary(current, :pre_test, parent)
     merge_ary(current, :test, parent)
     merge_ary(current, :post_test, parent)
     merge_ary(current, :on_success, parent)
     merge_ary(current, :on_failure, parent)
+
+    current
   end
 
   protected

@@ -4,10 +4,6 @@ class Repo < ApplicationRecord
   belongs_to :config, optional: true
   has_many :jobs
 
-  def enqueue_job(branch='master')
-    EnqueueJobCommand.new(repo).run(branch)
-  end
-
   def config_body
     config.try(:body)
   end
