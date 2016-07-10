@@ -10,6 +10,18 @@ class GithubClient
     end
   end
 
+  def register_webhook(username, repo)
+    req(:post, "/repos/#{username}/#{repo}/hooks", {
+        name: "cisimple-hook-#{repo}",
+        active: true,
+        events: ['push'],
+        config: {
+            url: "#{BASE_URL}/hooks/github",
+            content_type: 'json'
+        }
+    })
+  end
+
   def req(method, url, params={})
     res = conn.send(method, url, params)
     JSON.parse(res.body)

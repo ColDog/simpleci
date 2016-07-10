@@ -18,4 +18,7 @@ Rails.application.routes.draw do
   get   '/user'                     => 'users#current'
 
   get   '/auth/:provider/callback'  => 'sessions#create'
+
+  post  '/hooks/github'             => 'hooks#github'
+  post  '/hooks/bitbucket'          => 'hooks#bitbucket'
 end
