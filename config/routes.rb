@@ -1,19 +1,20 @@
 Rails.application.routes.draw do
 
   resources :jobs,      only: [:create, :update]
+
   resources :repos do
-    resources :jobs,    only: [:create, :update] do
+    resources :jobs, controller: 'repos/jobs', only: [:create, :update, :index, :show] do
       get '/output' => 'repos/jobs#output'
     end
   end
 
   resources :accounts do
-    resources :configs
-    resources :repos
+    resources :configs,     controller: 'accounts/configs'
+    resources :repos,       controller: 'accounts/repos'
   end
 
   # routes from the current user
-  post  '/user/sync'                => 'users#sync'
+  get   '/user/sync'                => 'users#sync'
   get   '/user/teams'               => 'users#teams'
   get   '/user'                     => 'users#current'
 

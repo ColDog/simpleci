@@ -4,3 +4,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 
 BASE_URL = 'http://localhost:3000'
+
+ActiveModelSerializers.config.adapter = :json

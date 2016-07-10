@@ -4,12 +4,12 @@ class Repo < ApplicationRecord
   belongs_to :config, optional: true
   has_many :jobs
 
-  def enqueue_job(branch)
-    next_id = jobs.last.pluck(:job_id).try(:+, 1) || 1
+  def enqueue_job(branch='master')
+    next_id = jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
     jobs.create!(
         branch: branch,
         job_id: next_id,
-        key: "#{name}.#{branch}.#{next_id}",
+        key: "#{name}_#{branch}_#{next_id}",
     )
   end
 

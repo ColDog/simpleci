@@ -1,11 +1,12 @@
 class Repos::JobsController < ApplicationController
+  before_action :set_repo
 
   def index
     render json: @repo.jobs.order(id: :desc)
   end
 
   def create
-    render json: @repo.enqueue_job(params[:branch])
+    render json: @repo.enqueue_job(params[:job].try(:[], :branch))
   end
 
   def show
@@ -22,7 +23,7 @@ class Repos::JobsController < ApplicationController
 
   protected
   def set_repo
-    @repo = current_user.repos.find(params[:id])
+    @repo = current_user.repos.find(params[:repo_id])
   end
 
 end

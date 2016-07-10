@@ -6,7 +6,7 @@ class GithubClient
 
   def teams
     req(:get, 'user/orgs').map do |org|
-      {id: org['id'], name: org['name']}
+      {id: org['id'], name: org['login']}
     end
   end
 

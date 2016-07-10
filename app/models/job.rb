@@ -2,13 +2,11 @@ class Job < ApplicationRecord
   belongs_to :repo
 
   def self.pop(worker)
-    if Job.where(worker: nil).update_all(worker: worker)
-      Job.find_by(worker: worker).last
-    end
+    Job.where(worker: nil).limit(1).update(worker: worker).first
   end
 
   def output_url
-    if completed
+    if complete
       "http://permanent-storage/#{key}"
     else
       "http://#{worker}/current-state"

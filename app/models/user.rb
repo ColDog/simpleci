@@ -10,20 +10,27 @@ class User < ApplicationRecord
     })
   end
 
-  def repos
+  def create_repo(params)
+    params[:user_id] = id
+    params[:provider] = provider
+    Repo.create!(params)
+  end
+
+  def all_repos
     Repo
-        .joins(team: [:members])
+        .left_joins(team: [:members])
         .where('members.user_id = ? OR repos.user_id = ?', self.id, self.id)
         .group('repos.id')
   end
 
   def sync
     client.teams.each do |team|
-      unless user.teams.find_by(name: team[:name])
+      unless teams.find_by(name: team[:name])
         team = Team.create!(name: team[:name])
         Member.create!(team_id: team.id, user_id: id)
       end
     end
+    teams
   end
 
   def client

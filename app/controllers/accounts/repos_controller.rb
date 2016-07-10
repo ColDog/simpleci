@@ -10,7 +10,7 @@ class Accounts::ReposController < ApplicationController
   end
 
   def create
-    render json: @base.repos.create!(safe_params)
+    render json: @base.create_repo(safe_params)
   end
 
   protected

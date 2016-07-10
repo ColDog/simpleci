@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
 
   def create
-    render json: Job.poll
+    render json: Job.pop(params[:worker])
   end
 
   def update
