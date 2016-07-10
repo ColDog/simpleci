@@ -1,4 +1,5 @@
-class Orgs::ReposController < ApplicationController
+class Accounts::ReposController < ApplicationController
+  before_action :set_base
 
   def index
     render json: @base.repos
@@ -13,13 +14,6 @@ class Orgs::ReposController < ApplicationController
   end
 
   protected
-  def set_base
-    if params[:base_id] == 'me'
-      @base = current_user
-    else
-      @base = current_user.teams.find(params[:base_id])
-    end
-  end
 
   def safe_params
     params.require(:repo).permit(:name)

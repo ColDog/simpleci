@@ -3,8 +3,13 @@ Rails.application.routes.draw do
   resources :jobs,      only: [:create, :update]
   resources :repos do
     resources :jobs,    only: [:create, :update] do
-      get '/output'
+      get '/output' => 'repos/jobs#output'
     end
+  end
+
+  resources :accounts do
+    resources :configs
+    resources :repos
   end
 
   # routes from the current user
