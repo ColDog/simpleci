@@ -12,4 +12,17 @@ class Repo < ApplicationRecord
     jobs.last
   end
 
+  # todo: handle teams in these methods
+  def owner
+    user.username
+  end
+
+  def auth_username
+    user.username
+  end
+
+  def auth_token
+    user.token
+  end
+
 end

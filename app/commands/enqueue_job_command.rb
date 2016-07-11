@@ -64,13 +64,13 @@ class EnqueueJobCommand
   # - on_failure    -> if present, main, else default
   def merge_build(main, config)
     {
-        base_image: main[:base_image] || config[:base_image],
+        base_image: main[:base_image] || config[:base_image] || 'ubuntu',
         env: (main[:env] || {}).merge(config[:env] || {}),
-        pre_test: main[:pre_test] || config[:pre_test],
-        test: main[:test] || config[:test],
-        post_test: main[:post_test] || config[:post_test],
-        on_success: main[:on_success] || config[:on_success],
-        on_failure: main[:on_failure] || config[:on_failure],
+        pre_test: main[:pre_test] || config[:pre_test] || [],
+        test: main[:test] || config[:test] || [],
+        post_test: main[:post_test] || config[:post_test] || [],
+        on_success: main[:on_success] || config[:on_success] || [],
+        on_failure: main[:on_failure] || config[:on_failure] || [],
     }
   end
 

@@ -13,10 +13,6 @@ class Job < ApplicationRecord
     end
   end
 
-  def merged_config
-
-  end
-
   def config_body
     repo.config.try(:body)
   end
