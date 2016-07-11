@@ -34,8 +34,8 @@ class JobMinionSerializer < ActiveModel::Serializer
   # }
   def repo
     {
-        auth_user: object.repo.auth_username,
-        auth_pass: object.repo.auth_token,
+        auth_user: object.auth_username,
+        auth_pass: object.auth_token,
         provider: object.repo.provider,
         branch: object.branch,
         org: object.repo.owner,

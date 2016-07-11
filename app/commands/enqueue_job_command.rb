@@ -19,6 +19,7 @@ class EnqueueJobCommand
         job_id: next_id,
         key: "#{repo.name}_#{branch}_#{next_id}",
         build: build,
+        user_id: user.id,
     )
   end
 

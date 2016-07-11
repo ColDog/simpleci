@@ -32,4 +32,12 @@ class Job < ApplicationRecord
     MinionClient.new(worker)
   end
 
+  def auth_username
+    user.username
+  end
+
+  def auth_token
+    user.token
+  end
+
 end
