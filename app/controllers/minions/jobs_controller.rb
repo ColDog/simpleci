@@ -17,6 +17,11 @@ class Minions::JobsController < ActionController::API
   end
 
   def authenticate_minion
+    unauthorized! unless secret == params[:token]
+  end
+
+  def secret
+    Rails.application.secrets[:secret_key_base]
   end
 
 end
