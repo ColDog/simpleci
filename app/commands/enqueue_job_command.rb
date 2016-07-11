@@ -8,16 +8,16 @@ class EnqueueJobCommand
 
   def run(branch='master')
     Job.transaction do
-      builds.map { |build| enqueue(branch, build) }
+      next_id = repo.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
+      builds.each_with_index.map { |build, idx| enqueue(branch, build, next_id, idx) }
     end
   end
 
-  def enqueue(branch, build)
-    next_id = repo.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
+  def enqueue(branch, build, next_id, idx)
     repo.jobs.create!(
         branch: branch,
         job_id: next_id,
-        key: "#{repo.name}_#{branch}_#{next_id}",
+        key: "#{repo.name}_#{branch.gsub('/', '-')}_#{next_id}-#{idx}",
         build: build,
         user_id: user.id,
     )
