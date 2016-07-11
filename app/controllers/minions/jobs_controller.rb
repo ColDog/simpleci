@@ -1,5 +1,4 @@
-class Minions::JobsController < ActionController::API
-  before_action :authenticate_minion
+class Minions::JobsController < ApplicationController
 
   def create
     render json: Job.pop(params[:worker]), serializer: JobMinionSerializer
@@ -13,10 +12,10 @@ class Minions::JobsController < ActionController::API
 
   protected
   def safe_params
-    params.require(:job).permit!
+    params.permit(:complete, :cancelled, :failed, :failure)
   end
 
-  def authenticate_minion
+  def authenticate
     unauthorized! unless secret == params[:token]
   end
 

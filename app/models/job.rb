@@ -3,6 +3,8 @@ class Job < ApplicationRecord
   belongs_to :user
 
   def self.pop(worker)
+    raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) if worker.nil?
+
     job = Job.where(worker: nil).limit(1).update(worker: worker).first
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) unless job
     job

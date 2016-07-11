@@ -1,9 +1,21 @@
 class ApplicationController < ActionController::API
-  before_action :authenticate
+  # before_action :authenticate
+
+  rescue_from(ActiveRecord::RecordInvalid) do |e|
+    render json: {error: 422, message: e.message}
+  end
+
+  rescue_from(ActiveRecord::RecordNotFound) do |e|
+    render json: {error: 404, message: e.message}
+  end
 
   protected
   def authenticate
-    render json: {error: 'Forbidden', status: 403}, status: 403 unless current_user
+    unauthorized! unless current_user
+  end
+
+  def unauthorized!
+    render json: {error: 'Forbidden', status: 403}, status: 403
   end
 
   def current_user
