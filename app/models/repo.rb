@@ -5,7 +5,7 @@ class Repo < ApplicationRecord
   has_many :jobs
 
   def config_body
-    config.try(:body)
+    HashWithIndifferentAccess.new(config.try(:body))
   end
 
   def last_job

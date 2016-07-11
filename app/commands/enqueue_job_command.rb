@@ -7,12 +7,9 @@ class EnqueueJobCommand
   end
 
   def run(branch='master')
-    jobs = []
-    builds.each do |build|
-      jobs << enqueue(branch, build)
+    Job.transaction do
+      builds.map { |build| enqueue(branch, build) }
     end
-
-    {jobs: jobs}
   end
 
   def enqueue(branch, build)
@@ -29,51 +26,52 @@ class EnqueueJobCommand
     @ci_yml ||= user.client.ci_yml(repo.name)
   end
 
-  def repo_config
-    @repo_config ||= repo.config_body
+  # repo config build to merge into the project configuration
+  def repo_config_build
+    @repo_config ||= repo.config_body.try(:[], :build) || {}
   end
 
+  # the array of builds to pass through, this handles building up a list of builds to pass through and
+  # appropriately merging in the parameters.
   def builds
-    res = []
-    if ci_yml[:builds].present?
-      ci_yml[:builds].each do |build|
-        res << merge_config(build, repo_config)
+    return @builds if @builds
+
+    @builds = []
+    if ci_yml
+      if ci_yml[:builds].present? && ci_yml[:builds].is_a?(Array)
+        ci_yml[:builds].each do |build|
+          @builds << merge_build(build, repo_config_build)
+        end
+      else
+        if ci_yml[:build].present? && ci_yml[:build].is_a?(Hash)
+          @builds << merge_build(ci_yml[:build], repo_config_build)
+        end
       end
-    else
-      if ci_yml[:build].present?
-        res << merge_config(ci_yml[:build], repo_config)
-      end
+    elsif repo_config_build.present?
+      @builds << repo_config_build
     end
 
-    res
+    @builds
   end
 
-  def merge_config(current, parent)
-    return current unless parent
-
-    merge_ary(current, :env, parent)
-    merge_ary(current, :pre_test, parent)
-    merge_ary(current, :test, parent)
-    merge_ary(current, :post_test, parent)
-    merge_ary(current, :on_success, parent)
-    merge_ary(current, :on_failure, parent)
-
-    current
-  end
-
-  protected
-  def jobs
-    repo.jobs
-  end
-
-  def merge_ary(current, key, parent)
-    current[key] ||= []
-    current[key] = current[key].concat(parent[key]) if parent[key] && parent[key].is_a?(Array)
-  end
-
-  def merge_hash(current, key, parent)
-    current[key] ||= {}
-    current[key] = current[key].merge(parent[key]) if parent[key] && parent[key].is_a?(Hash)
+  # merged build attributes
+  # - base_image    -> in repo config overrides main
+  # - env           -> variables are merged together, main takes precedence
+  # - pre_test      -> if present, main, else default
+  # - test          -> if present, main, else default
+  # - post_test     -> if present, main, else default
+  # - on_success    -> if present, main, else default
+  # - on_failure    -> if present, main, else default
+  def merge_build(main, config)
+    {
+        base_image: main[:base_image] || config[:base_image],
+        env: (main[:env] || {}).merge(config[:env] || {}),
+        pre_test: main[:pre_test] || config[:pre_test],
+        test: main[:test] || config[:test],
+        post_test: main[:post_test] || config[:post_test],
+        on_success: main[:on_success] || config[:on_success],
+        on_failure: main[:on_failure] || config[:on_failure],
+    }
   end
 
 end

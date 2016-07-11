@@ -1,13 +1,6 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  email: MyString
-  provider: MyString
-  token: MyString
-  uid: MyString
-
-two:
-  email: MyString
-  provider: MyString
-  token: MyString
-  uid: MyString
+  email: cjwalker@sfu.ca
+  username: coldog
+  provider: github
+  token: 31a08b1e4a5095e4822ace9817de669e8a6a1f55
+  uid: 10747761
