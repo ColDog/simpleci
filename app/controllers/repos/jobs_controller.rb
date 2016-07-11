@@ -6,7 +6,7 @@ class Repos::JobsController < ApplicationController
   end
 
   def create
-    render json: EnqueueJobCommand.new(current_user, @repo).run(branch)
+    render json: EnqueueJobCommand.new(current_user, @repo).run(branch), root: :jobs
   end
 
   def show

@@ -1,8 +1,11 @@
 class Job < ApplicationRecord
   belongs_to :repo
+  belongs_to :user
 
   def self.pop(worker)
-    Job.where(worker: nil).limit(1).update(worker: worker).first
+    job = Job.where(worker: nil).limit(1).update(worker: worker).first
+    raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) unless job
+    job
   end
 
   def output_url

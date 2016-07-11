@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  resources :jobs,      only: [:create, :update]
+  namespace :minions do
+    resources :jobs,      only: [:create, :update]
+  end
 
   resources :repos do
     resources :jobs, controller: 'repos/jobs', only: [:create, :update, :index, :show] do

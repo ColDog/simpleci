@@ -13,8 +13,8 @@ class EnqueueJobCommand
   end
 
   def enqueue(branch, build)
-    next_id = jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
-    jobs.create!(
+    next_id = repo.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
+    repo.jobs.create!(
         branch: branch,
         job_id: next_id,
         key: "#{repo.name}_#{branch}_#{next_id}",

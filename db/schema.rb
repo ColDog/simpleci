@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
 
   create_table "jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "repo_id"
+    t.integer  "user_id"
     t.integer  "job_id",                                   null: false
     t.string   "key",                                      null: false
     t.string   "branch"
@@ -39,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
     t.index ["job_id"], name: "index_jobs_on_job_id", using: :btree
     t.index ["key"], name: "index_jobs_on_key", using: :btree
     t.index ["repo_id"], name: "index_jobs_on_repo_id", using: :btree
+    t.index ["user_id"], name: "index_jobs_on_user_id", using: :btree
     t.index ["worker"], name: "index_jobs_on_worker", using: :btree
   end
 
@@ -84,6 +86,7 @@ ActiveRecord::Schema.define(version: 20160709234440) do
   add_foreign_key "configs", "teams"
   add_foreign_key "configs", "users"
   add_foreign_key "jobs", "repos"
+  add_foreign_key "jobs", "users"
   add_foreign_key "members", "teams"
   add_foreign_key "members", "users"
   add_foreign_key "repos", "configs"
