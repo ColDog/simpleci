@@ -5,8 +5,7 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
   test 'enqueue a job' do
     repo = repos(:one)
     cmd = EnqueueJobCommand.new(users(:one), repo)
-    puts "config: #{cmd.builds}"
-    cmd.builds
+    assert cmd.builds[0][:base_image].nil?
 
     conf = Config.create!(name: 'main', body: {
         build: {
@@ -17,8 +16,7 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
     repo.update!(config_id: conf.id)
 
     cmd = EnqueueJobCommand.new(users(:one), repo.reload)
-    puts "config: #{cmd.builds}"
-    cmd.builds
+    assert cmd.builds[0][:base_image].present?
 
   end
 
