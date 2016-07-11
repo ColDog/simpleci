@@ -5,7 +5,7 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
   test 'enqueue a job' do
     repo = repos(:one)
     cmd = EnqueueJobCommand.new(users(:one), repo)
-    assert cmd.builds[0][:base_image].nil?
+    assert_equal 'ubuntu', cmd.builds[0][:base_image]
 
     conf = Config.create!(name: 'main', body: {
         build: {
