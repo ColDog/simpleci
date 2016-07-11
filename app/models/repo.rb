@@ -16,4 +16,8 @@ class Repo < ApplicationRecord
     user.try(:username) || team.try(:name)
   end
 
+  def job_count
+    jobs.count
+  end
+
 end
