@@ -12,7 +12,7 @@ gem 'omniauth-bitbucket'
 gem 'omniauth-github'
 
 gem 'faraday'
-gem 'active_model_serializers', '0.10.0.rc5'
+gem 'active_model_serializers', '>= 0.10'
 
 group :development, :test do
   gem 'byebug', platform: :mri
