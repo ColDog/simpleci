@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :jobs, controller: 'repos/jobs', only: [:create, :update, :index, :show] do
       get '/output' => 'repos/jobs#output'
     end
+
+    get '/branches' => 'repos/info#branches'
   end
 
   resources :accounts do

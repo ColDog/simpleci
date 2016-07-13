@@ -6,6 +6,7 @@ class Accounts::ConfigsController < ApplicationController
   end
 
   def index
+    puts @base
     render json: @base.configs
   end
 

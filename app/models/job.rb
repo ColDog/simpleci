@@ -12,9 +12,9 @@ class Job < ApplicationRecord
 
   def output_url
     if complete
-      "http://permanent-storage/#{key}"
-    else
-      "http://#{worker}/current-state"
+      "https://s3-#{API_CONFIG.s3_region}.amazonaws.com/#{API_CONFIG.s3_bucket}/builds/#{repo.owner}/#{repo.name}/#{key}"
+    elsif worker.present?
+      "#{worker}/current-state"
     end
   end
 

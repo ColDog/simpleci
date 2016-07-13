@@ -11,6 +11,10 @@ class GithubClient
     end
   end
 
+  def branches(repo)
+    req_cached(:get, "/repos/#{@username}/#{repo}/branches")
+  end
+
   def file(repo, path)
     res = req(:get, "/repos/#{@username}/#{repo}/contents/#{path}")
     Base64.decode64(res['content']) if res['content']
@@ -33,10 +37,16 @@ class GithubClient
     })
   end
 
+  protected
+
   def req(method, url, params={})
     puts "#{method}  https://api.github.com/#{url}"
     res = conn.send(method, url, params)
     JSON.parse(res.body)
+  end
+
+  def req_cached(method, url, params={})
+    Rails.cache.fetch("github-api:#{method}.#{url}") { req(method, url, params) }
   end
 
   def conn
