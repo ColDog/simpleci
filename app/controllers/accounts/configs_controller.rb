@@ -6,12 +6,17 @@ class Accounts::ConfigsController < ApplicationController
   end
 
   def index
-    puts @base
     render json: @base.configs
   end
 
   def show
     render json: @base.configs.find(params[:id])
+  end
+
+  def update
+    config = @base.configs.find(params[:id])
+    config.update!(safe_params)
+    render json: config
   end
 
   protected
