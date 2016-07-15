@@ -10,6 +10,10 @@ class Job < ApplicationRecord
     job
   end
 
+  def build
+    super.try(:symbolize_keys)
+  end
+
   def output_url
     if complete
       "https://s3-#{API_CONFIG.s3_region}.amazonaws.com/#{API_CONFIG.s3_bucket}/builds/#{repo.owner}/#{repo.name}/#{key}"
@@ -43,6 +47,25 @@ class Job < ApplicationRecord
 
   def auth_token
     user.token
+  end
+
+  def owner
+    user || team
+  end
+
+  def build_with_variables
+    str = JSON.generate(build)
+    str.scan(/\$\{[^\}]+\}/).each do |match|
+      key = match.match(/\$\{(.*)\}/)[1].strip
+      str.gsub!(match, "#{owner.variables.find_by(key: key).try(:get_value)}")
+    end
+    JSON.parse(str).symbolize_keys
+  end
+
+  def build_for_minion
+    val = build_with_variables
+    val[:env] = val[:env].map { |k, v| "#{k}=#{v}" }
+    val
   end
 
 end

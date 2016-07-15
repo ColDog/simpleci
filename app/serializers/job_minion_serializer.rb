@@ -12,15 +12,7 @@ class JobMinionSerializer < ActiveModel::Serializer
   #   OnFailure 	[]string	`json:"on_failure"`
   # }
   def build
-    {
-        env: object.build['env'].map { |k, v| "#{k.to_s.upcase}=#{v}" },
-        base_image: object.build['base_image'],
-        pre_test: object.build['pre_test'],
-        test: object.build['test'],
-        post_test: object.build['post_test'],
-        on_success: object.build['on_success'],
-        on_failure: object.build['on_failure'],
-    }
+    object.build_for_minion
   end
 
   # The golang struct this must serialize into

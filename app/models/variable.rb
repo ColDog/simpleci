@@ -7,14 +7,15 @@ class Variable < ApplicationRecord
   before_validation do
     if encrypted
       self.encrypted_value = encrypt(value)
+      self.value = nil
     end
   end
 
-  def value
+  def get_value
     if encrypted_value.present?
-      decrypt(value)
+      decrypt(encrypted_value)
     else
-      super
+      value
     end
   end
 

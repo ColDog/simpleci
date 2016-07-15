@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :teams, through: :members
   has_many :repos
   has_many :configs
+  has_many :variables
 
   def self.from_omniauth(auth)
     find_or_update_by!({provider: auth.provider, uid: auth.uid}, {
