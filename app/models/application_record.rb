@@ -1,4 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
+  include EncryptionHelper
+
   self.abstract_class = true
 
   def self.find_or_update_by!(hash, updates={}, &block)

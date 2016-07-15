@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SecretTest < ActiveSupport::TestCase
+class VariableTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

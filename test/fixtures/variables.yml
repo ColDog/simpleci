@@ -5,6 +5,7 @@ one:
   team: one
   key: MyString
   value: MyString
+  encrypted_value: MyString
   key_version: 1
 
 two:
@@ -12,4 +13,5 @@ two:
   team: two
   key: MyString
   value: MyString
+  encrypted_value: MyString
   key_version: 1
