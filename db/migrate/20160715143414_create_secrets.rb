@@ -5,7 +5,6 @@ class CreateSecrets < ActiveRecord::Migration[5.0]
       t.references :team, foreign_key: true
       t.string    :key
       t.string    :value
-      t.integer   :key_version
       t.datetime  :lease
 
       t.timestamps
