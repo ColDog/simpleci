@@ -1,4 +1,0 @@
-one:
-  name: ci-sample
-  provider: github
-  user: one

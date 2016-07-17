@@ -1,6 +1,6 @@
 class Job < ApplicationRecord
-  belongs_to :repo
   belongs_to :user
+  belongs_to :job_definition
 
   def self.pop(worker)
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) if worker.nil?

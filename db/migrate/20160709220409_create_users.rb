@@ -3,10 +3,10 @@ class CreateUsers < ActiveRecord::Migration[5.0]
     create_table :users do |t|
       t.string :email
       t.string :name
-      t.string :username
+      t.string :username, null: false
       t.string :provider
       t.string :token
-      t.string :uid
+      t.string :uid,      null: false
 
       t.timestamps
     end
