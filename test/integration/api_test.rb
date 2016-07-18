@@ -10,6 +10,10 @@ class ApiTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test 'create a new token' do
+
+  end
+
   test 'job creation cycle' do
     post '/api/users/me/job_definitions',
          params: { job_definition: sample_job_def },
