@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160718002543) do
+ActiveRecord::Schema.define(version: 20160718030115) do
 
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
@@ -69,6 +69,15 @@ ActiveRecord::Schema.define(version: 20160718002543) do
     t.index ["target_id"], name: "index_members_on_target_id", using: :btree
   end
 
+  create_table "tokens", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "key",        null: false
+    t.string   "secret",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_tokens_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
     t.string   "name"
@@ -86,4 +95,5 @@ ActiveRecord::Schema.define(version: 20160718002543) do
   add_foreign_key "jobs", "users"
   add_foreign_key "members", "users", column: "source_id"
   add_foreign_key "members", "users", column: "target_id"
+  add_foreign_key "tokens", "users"
 end
