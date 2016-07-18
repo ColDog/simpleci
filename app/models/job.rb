@@ -22,6 +22,20 @@ class Job < ApplicationRecord
     end
   end
 
+  def state
+    if complete
+      if failed
+        :failed
+      else
+        :successful
+      end
+    elsif cancelled
+      :cancelled
+    else
+      :pending
+    end
+  end
+
   def config_body
     repo.config.try(:body)
   end
