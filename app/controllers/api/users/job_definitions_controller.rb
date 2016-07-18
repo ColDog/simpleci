@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      render json: @user.job_definitions.find(params[:id])
+      render json: @user.job_definitions.find_by!(name: params[:id])
     end
 
     def create
@@ -15,11 +15,11 @@ module Api
     end
 
     def update
-      render json: @user.job_definitions.find(params[:id]).update!(safe_params)
+      render json: @user.job_definitions.find_by!(name: params[:id]).update!(safe_params)
     end
 
     def destroy
-      render json: @user.job_definitions.find(params[:id]).destroy!
+      render json: @user.job_definitions.find_by!(name: params[:id]).destroy!
     end
 
     private

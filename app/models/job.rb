@@ -50,22 +50,27 @@ class Job < ApplicationRecord
   end
 
   def owner
-    user || team
+    job_definition.user
   end
 
   def build_with_variables
-    str = JSON.generate(build)
-    str.scan(/\$\{[^\}]+\}/).each do |match|
-      key = match.match(/\$\{(.*)\}/)[1].strip
-      str.gsub!(match, "#{owner.variables.find_by(key: key).try(:get_value)}")
-    end
-    JSON.parse(str).symbolize_keys
+    # str = JSON.generate(build)
+    # str.scan(/\$\{[^\}]+\}/).each do |match|
+    #   key = match.match(/\$\{(.*)\}/)[1].strip
+    #   str.gsub!(match, "#{owner.variables.find_by(key: key).try(:get_value)}")
+    # end
+    # JSON.parse(str).symbolize_keys
+    build
   end
 
   def build_for_minion
     val = build_with_variables
     val[:env] = val[:env].map { |k, v| "#{k}=#{v}" }
     val
+  end
+
+  def repo_for_minion
+    repo.merge(auth_user: auth_username, auth_token: auth_token)
   end
 
 end

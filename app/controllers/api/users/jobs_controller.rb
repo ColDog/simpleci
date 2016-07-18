@@ -6,7 +6,11 @@ module Api
     end
 
     def show
-      render json: @user.jobs.find(params[:id])
+      render json: @user.jobs.find_by!(key: params[:id])
+    end
+
+    def destroy
+      render json: @user.jobs.find_by!(key: params[:id]).cancel
     end
 
   end
