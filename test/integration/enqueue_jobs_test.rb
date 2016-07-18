@@ -32,4 +32,8 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
     puts res
   end
 
+  test 'event triggering test' do
+
+  end
+
 end

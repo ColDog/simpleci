@@ -6,7 +6,9 @@ class EnqueueJobCommand
     @job_def = job_def
   end
 
-  def run(branch='master')
+  def run(payload)
+    branch = payload[:branch] || 'master'
+
     Job.transaction do
       next_id = job_def.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
       builds.each_with_index.map { |build, idx| enqueue(branch, build, next_id, idx) }
