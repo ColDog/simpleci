@@ -9,10 +9,9 @@ Rails.application.routes.draw do
       resources :job_definitions, controller: 'users/job_definitions'
       resources :jobs,            controller: 'users/jobs'
 
-      get 'account/sync'   => 'users/accounts#sync'
-      get 'account/teams'  => 'users/accounts#teams'
-      get 'account/repos'  => 'users/accounts#repos'
-      get 'account/repos'  => 'users/accounts#repos'
+      post  'sync'
+      get   'teams'
+      get   'repos'
     end
 
     get 'current' => 'users#current'

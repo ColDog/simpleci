@@ -26,10 +26,10 @@ module Api
 
     private
     def set_base_user
-      if params[:account_id] == 'me'
+      if params[:user_id] == 'me'
         @user = current_user
       else
-        @user = current_user.users.find(params[:account_id])
+        @user = current_user.users.find(params[:user_id])
       end
     end
 
