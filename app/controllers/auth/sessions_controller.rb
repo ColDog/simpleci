@@ -1,4 +1,4 @@
-class SessionsController < ActionController::API
+class Auth::SessionsController < ActionController::API
 
   def create
     user = User.from_omniauth(auth_hash)

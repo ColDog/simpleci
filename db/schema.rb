@@ -10,101 +10,61 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160715144429) do
+ActiveRecord::Schema.define(version: 20160717234504) do
 
-  create_table "configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
-    t.integer  "team_id"
-    t.string   "name"
-    t.json     "body"
+  create_table "job_definitions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id",    null: false
+    t.string   "name",       null: false
+    t.json     "repo"
+    t.json     "builds"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_configs_on_team_id", using: :btree
-    t.index ["user_id"], name: "index_configs_on_user_id", using: :btree
+    t.index ["user_id"], name: "index_job_definitions_on_user_id", using: :btree
   end
 
   create_table "jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "repo_id"
+    t.integer  "job_definition_id",                               null: false
     t.integer  "user_id"
-    t.integer  "job_id",                                   null: false
-    t.string   "key",                                      null: false
-    t.string   "branch"
-    t.json     "build",                                    null: false
+    t.integer  "job_id",                                          null: false
+    t.string   "key",                                             null: false
+    t.json     "build",                                           null: false
     t.string   "worker"
-    t.boolean  "complete",                 default: false
-    t.boolean  "cancelled",                default: false
-    t.boolean  "failed",                   default: false
-    t.text     "failure",    limit: 65535
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.boolean  "complete",                        default: false
+    t.boolean  "cancelled",                       default: false
+    t.boolean  "failed",                          default: false
+    t.text     "failure",           limit: 65535
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.index ["job_definition_id"], name: "index_jobs_on_job_definition_id", using: :btree
     t.index ["job_id"], name: "index_jobs_on_job_id", using: :btree
     t.index ["key"], name: "index_jobs_on_key", using: :btree
-    t.index ["repo_id"], name: "index_jobs_on_repo_id", using: :btree
     t.index ["user_id"], name: "index_jobs_on_user_id", using: :btree
     t.index ["worker"], name: "index_jobs_on_worker", using: :btree
   end
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "team_id"
-    t.integer  "user_id"
+    t.integer  "target_id"
+    t.integer  "source_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_members_on_team_id", using: :btree
-    t.index ["user_id"], name: "index_members_on_user_id", using: :btree
-  end
-
-  create_table "repos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name",       null: false
-    t.string   "provider",   null: false
-    t.integer  "team_id"
-    t.integer  "user_id"
-    t.integer  "config_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["config_id"], name: "index_repos_on_config_id", using: :btree
-    t.index ["team_id"], name: "index_repos_on_team_id", using: :btree
-    t.index ["user_id"], name: "index_repos_on_user_id", using: :btree
-  end
-
-  create_table "teams", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["source_id"], name: "index_members_on_source_id", using: :btree
+    t.index ["target_id"], name: "index_members_on_target_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
     t.string   "name"
-    t.string   "username"
+    t.string   "username",   null: false
     t.string   "provider"
     t.string   "token"
-    t.string   "uid"
+    t.string   "uid",        null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "variables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
-    t.integer  "team_id"
-    t.string   "key"
-    t.string   "value"
-    t.string   "encrypted_value"
-    t.integer  "key_version"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.index ["team_id"], name: "index_variables_on_team_id", using: :btree
-    t.index ["user_id"], name: "index_variables_on_user_id", using: :btree
-  end
-
-  add_foreign_key "configs", "teams"
-  add_foreign_key "configs", "users"
-  add_foreign_key "jobs", "repos"
+  add_foreign_key "job_definitions", "users"
+  add_foreign_key "jobs", "job_definitions"
   add_foreign_key "jobs", "users"
-  add_foreign_key "members", "teams"
-  add_foreign_key "members", "users"
-  add_foreign_key "repos", "configs"
-  add_foreign_key "repos", "teams"
-  add_foreign_key "repos", "users"
-  add_foreign_key "variables", "teams"
-  add_foreign_key "variables", "users"
+  add_foreign_key "members", "users", column: "source_id"
+  add_foreign_key "members", "users", column: "target_id"
 end
