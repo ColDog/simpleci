@@ -8,7 +8,8 @@ Rails.application.routes.draw do
     resources :users do
       resources :job_definitions, controller: 'users/job_definitions'
       resources :jobs,            controller: 'users/jobs'
-      resources :events,          controller: 'users/events'
+      resources :events,          controller: 'users/events',           only: [:create, :destroy, :index, :show]
+      resources :tokens,          controller: 'users/tokens',           only: [:create, :destroy, :index]
 
       post  'sync'
       get   'teams'

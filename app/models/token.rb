@@ -13,7 +13,7 @@ class Token < ApplicationRecord
   end
 
   def self.user_from_token(client_id, token)
-    db_token = Token.find_by!(key: client_id)
+    db_token = Token.find_by(key: client_id)
     if db_token && BCrypt::Password.new(db_token.secret).is_password?(token)
       return db_token.user
     end

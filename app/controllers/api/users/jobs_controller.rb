@@ -1,9 +1,10 @@
 module Api
   module Users
     class JobsController < ApiController
+      before_action :set_base_user
 
       def index
-        render json: @user.jobs
+        render json: @user.jobs.query(params[:query]).page(params[:page]).per(params[:per_page])
       end
 
       def show

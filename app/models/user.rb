@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :events
   has_many :job_definitions
   has_many :jobs, through: :job_definitions
+  has_many :tokens
 
   def self.from_omniauth(auth)
     find_or_update_by!({provider: auth.provider, uid: auth.uid}, {

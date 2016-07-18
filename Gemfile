@@ -6,6 +6,7 @@ gem 'mysql2'
 gem 'puma', '~> 3.0'
 gem 'rack-cors'
 gem 'bcrypt'
+gem 'kaminari'
 
 gem 'omniauth'
 gem 'omniauth-oauth2'

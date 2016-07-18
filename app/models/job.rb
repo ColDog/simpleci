@@ -10,6 +10,21 @@ class Job < ApplicationRecord
     job
   end
 
+  def self.query(params)
+    scope = all
+
+    scope = scope.where(cancelled: params[:cancelled]) if params[:cancelled]
+    scope = scope.where(cancelled: params[:complete]) if params[:complete]
+    scope = scope.where(cancelled: params[:failed]) if params[:failed]
+    scope = scope.joins(:job_definition).where('job_definitions.name': params[:job_family]) if params[:job_family]
+
+    scope
+  end
+
+  def job_family
+    job_definition.name
+  end
+
   def build
     super.try(:symbolize_keys)
   end

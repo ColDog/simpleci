@@ -1,6 +1,7 @@
 module Api
   module Users
     class TokensController < ApiController
+      before_action :set_base_user
 
       def index
         render json: @user.tokens
