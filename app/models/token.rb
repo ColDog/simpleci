@@ -12,4 +12,8 @@ class Token < ApplicationRecord
     {secret: secret, key: key}
   end
 
+  def self.authorized?(client_id, token)
+    BCrypt::Password.new(Token.find_by!(key: client_id).secret).is_password?(token)
+  end
+
 end
