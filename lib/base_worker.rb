@@ -16,13 +16,23 @@ class BaseWorker
     @queue.where(worker: nil).limit(1).update(worker: uuid).first
   end
 
-  def self.run
+  def self.size
+    @queue.where(worker: nil).count
+  end
+
+  def self.run_one_job
+    run(max_count: 1, raise_errors: true)
+  end
+
+  def self.run(max_count: nil, raise_errors: false)
+    count = 0
     begin
 
       loop do
         current = next_job
 
         if current
+          count += 1
           begin
             t1 = Time.now
             self.new.perform(current)
@@ -40,17 +50,34 @@ class BaseWorker
               current.update(last_error: e.backtrace.join("\n"), attempts: current.attempts + 1, worker: nil)
             end
 
+            if raise_errors
+              raise e
+            end
+
           end
+        end
+
+        if count >= max_count
+          quit
+          return
         end
 
         sleep(poll_time)
       end
 
     rescue Exception => e
-      @queue.where(worker: uuid).update(worker: nil)
-      Rails.logger.warn "exiting due to: #{e.message}"
-      return
+      if raise_errors
+        raise e
+      else
+        Rails.logger.warn "exiting due to: #{e.message}"
+        quit
+        return
+      end
     end
+  end
+
+  def self.quit
+    @queue.where(worker: uuid).update(worker: nil)
   end
 
 end

@@ -4,7 +4,7 @@ class CreateJobDefinitions < ActiveRecord::Migration[5.0]
       t.references  :user, foreign_key: true, null: false
       t.string      :name,  null: false, unique: true, index: true
 
-      t.string      :triggered_by
+      t.json        :triggered_by
       t.json        :repo
       t.json        :build
 

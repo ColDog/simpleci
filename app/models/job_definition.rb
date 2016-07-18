@@ -14,6 +14,10 @@ class JobDefinition < ApplicationRecord
     (super || {}).symbolize_keys
   end
 
+  def triggered_by
+    super || []
+  end
+
   def repo_name
     repo[:name] || name
   end

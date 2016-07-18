@@ -8,6 +8,8 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
     job_definition = user.job_definitions.create!(
         name: 'test',
 
+        triggered_by: 'stuff',
+
         repo: {
             owner: 'coldog',
             project: 'ci-sample'
@@ -28,12 +30,18 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
         }
     )
 
-    res = EnqueueJobCommand.new(user, job_definition).run('master')
-    puts res
+    res = EnqueueJobCommand.new(user, job_definition).run(branch: 'master')
   end
 
   test 'event triggering test' do
+    user = User.first
+    user.job_definitions.create!(sample_job_def.merge(triggered_by: ['test.*']))
 
+    Event.create(name: 'test.stuff', payload: {branch: 'master'}, user_id: user.id)
+
+    assert_difference 'Job.count', +1 do
+      EventWorker.run_one_job
+    end
   end
 
 end

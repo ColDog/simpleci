@@ -3,8 +3,10 @@ class EventWorker < BaseWorker
 
   def perform(event)
     event.user.job_definitions.each do |job_def|
-      if matches(event.name, job_def.triggered_by)
-        EnqueueJobCommand.new(event.user, job_def).run(event.payload)
+      job_def.triggered_by.each do |trigger|
+        if matches(event.name, trigger)
+          EnqueueJobCommand.new(event.user, job_def).run(event.payload)
+        end
       end
     end
   end

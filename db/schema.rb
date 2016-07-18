@@ -38,6 +38,28 @@ ActiveRecord::Schema.define(version: 20160718002543) do
     t.index ["user_id"], name: "index_job_definitions_on_user_id", using: :btree
   end
 
+  create_table "jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "job_definition_id",                               null: false
+    t.integer  "user_id"
+    t.integer  "job_id",                                          null: false
+    t.string   "key",                                             null: false
+    t.json     "build",                                           null: false
+    t.json     "repo"
+    t.string   "stored_output_url"
+    t.string   "worker"
+    t.boolean  "complete",                        default: false
+    t.boolean  "cancelled",                       default: false
+    t.boolean  "failed",                          default: false
+    t.text     "failure",           limit: 65535
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.index ["job_definition_id"], name: "index_jobs_on_job_definition_id", using: :btree
+    t.index ["job_id"], name: "index_jobs_on_job_id", using: :btree
+    t.index ["key"], name: "index_jobs_on_key", using: :btree
+    t.index ["user_id"], name: "index_jobs_on_user_id", using: :btree
+    t.index ["worker"], name: "index_jobs_on_worker", using: :btree
+  end
+
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "target_id"
     t.integer  "source_id"
@@ -58,32 +80,10 @@ ActiveRecord::Schema.define(version: 20160718002543) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "workers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "job_definition_id",                               null: false
-    t.integer  "user_id"
-    t.integer  "job_id",                                          null: false
-    t.string   "key",                                             null: false
-    t.json     "build",                                           null: false
-    t.json     "repo"
-    t.string   "stored_output_url"
-    t.string   "worker"
-    t.boolean  "complete",                        default: false
-    t.boolean  "cancelled",                       default: false
-    t.boolean  "failed",                          default: false
-    t.text     "failure",           limit: 65535
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.index ["job_definition_id"], name: "index_workers_on_job_definition_id", using: :btree
-    t.index ["job_id"], name: "index_workers_on_job_id", using: :btree
-    t.index ["key"], name: "index_workers_on_key", using: :btree
-    t.index ["user_id"], name: "index_workers_on_user_id", using: :btree
-    t.index ["worker"], name: "index_workers_on_worker", using: :btree
-  end
-
   add_foreign_key "events", "users"
   add_foreign_key "job_definitions", "users"
+  add_foreign_key "jobs", "job_definitions"
+  add_foreign_key "jobs", "users"
   add_foreign_key "members", "users", column: "source_id"
   add_foreign_key "members", "users", column: "target_id"
-  add_foreign_key "workers", "job_definitions"
-  add_foreign_key "workers", "users"
 end

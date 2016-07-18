@@ -1,6 +1,6 @@
 class CreateJobs < ActiveRecord::Migration[5.0]
   def change
-    create_table :workers do |t|
+    create_table :jobs do |t|
       t.references :job_definition, foreign_key: true, null: false
       t.references :user,           foreign_key: true
 

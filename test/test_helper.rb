@@ -7,4 +7,32 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def sample_job_def
+    {
+        name: 'test',
+
+        triggered_by: ['git:push:ci-sample.*'],
+
+        repo: {
+            owner: 'coldog',
+            project: 'ci-sample'
+        },
+
+        build: {
+            build: {
+                env: {
+                    TEST: 'true'
+                },
+                base_image: 'ubuntu',
+                before: ['echo "hello"'],
+                main: ['echo "hello from main"'],
+                after: ['echo "hello from after"'],
+                on_success: ['echo "hello from on_success"'],
+                on_failure: ['echo "hello from on_failure"'],
+            }
+        }
+    }
+  end
+
 end

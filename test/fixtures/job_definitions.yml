@@ -1,0 +1,23 @@
+one:
+  name: test
+  user: one
+
+  repo:
+    owner: coldog
+    project: ci-sample
+
+  build:
+    build:
+      env:
+        TEST: stuff
+      base_image: ubuntu
+      before:
+        - echo 'hello'
+      main:
+        - echo 'main'
+      after:
+        - echo 'after'
+      on_success:
+        - echo 'success!'
+      on_failure:
+        - echo 'failed'
