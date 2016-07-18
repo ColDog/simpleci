@@ -8,13 +8,12 @@ Rails.application.routes.draw do
     resources :users do
       resources :job_definitions, controller: 'users/job_definitions'
       resources :jobs,            controller: 'users/jobs'
+      resources :events,          controller: 'users/events'
 
       post  'sync'
       get   'teams'
       get   'repos'
     end
-
-    get 'current' => 'users#current'
   end
 
   namespace :auth do

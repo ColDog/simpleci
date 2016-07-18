@@ -12,7 +12,7 @@ class ActiveSupport::TestCase
     {
         name: 'test',
 
-        triggered_by: ['git:push:ci-sample.*'],
+        triggered_by: %w(git:push:ci-sample.* test.*),
 
         repo: {
             owner: 'coldog',

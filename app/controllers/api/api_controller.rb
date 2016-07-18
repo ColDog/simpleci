@@ -1,6 +1,6 @@
 module Api
   class ApiController < ApplicationController
-    # before_action :authenticate
+    before_action :authenticate
 
     rescue_from(ActiveRecord::RecordInvalid) do |e|
       render json: {error: 422, message: e.message}
@@ -20,11 +20,11 @@ module Api
     end
 
     def current_user
-      @current_user ||= User.first
+      @current_user ||= Token.user_from_token(token[0], token[1])
     end
 
-    def tokens
-      request.headers['Authorization'].split(':')
+    def token
+      @token ||= request.headers['Authorization'].split(':')
     end
 
     private

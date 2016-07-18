@@ -30,7 +30,7 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
         }
     )
 
-    res = EnqueueJobCommand.new(user, job_definition).run(branch: 'master')
+    EnqueueJobCommand.new(user, job_definition).run(branch: 'master')
   end
 
   test 'event triggering test' do

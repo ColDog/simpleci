@@ -1,17 +1,19 @@
 module Api
-  class Users::JobsController < ApiController
+  module Users
+    class JobsController < ApiController
 
-    def index
-      render json: @user.jobs
+      def index
+        render json: @user.jobs
+      end
+
+      def show
+        render json: @user.jobs.find_by!(key: params[:id])
+      end
+
+      def destroy
+        render json: @user.jobs.find_by!(key: params[:id]).cancel
+      end
+
     end
-
-    def show
-      render json: @user.jobs.find_by!(key: params[:id])
-    end
-
-    def destroy
-      render json: @user.jobs.find_by!(key: params[:id]).cancel
-    end
-
   end
 end
