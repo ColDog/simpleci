@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   has_many :members
-  has_many :users, through: :members
   has_many :events
 
   def self.from_omniauth(auth)
@@ -9,14 +8,20 @@ class User < ApplicationRecord
     })
   end
 
+  # returns self plus all users that are connected through the members table
+  def users
+    User
+        .all
+        .joins('LEFT JOIN members on members.target_id = users.id')
+        .where('users.id = ? OR members.source_id = ?', id, id)
+  end
+
   def sync
     client.teams.each do |team|
-      unless teams.find_by(name: team[:name])
-        team = User.create!(username: team[:name], uid: team[:id])
-        Member.create!(source_id: team.id, target_id: id)
-      end
+      team = User.find_or_create_by!(username: team[:name], uid: team[:id])
+      Member.find_or_create_by!(source_id: id, target_id: team.id)
     end
-    teams
+    users
   end
 
   def client

@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160717234504) do
+ActiveRecord::Schema.define(version: 20160718002543) do
+
+  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.json     "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_events_on_user_id", using: :btree
+  end
 
   create_table "job_definitions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id",    null: false
@@ -63,6 +72,7 @@ ActiveRecord::Schema.define(version: 20160717234504) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "events", "users"
   add_foreign_key "job_definitions", "users"
   add_foreign_key "jobs", "job_definitions"
   add_foreign_key "jobs", "users"
