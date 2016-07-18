@@ -2,22 +2,34 @@ require 'test_helper'
 
 class EnqueueJobsTest < ActionDispatch::IntegrationTest
 
-  test 'enqueue a job' do
-    repo = repos(:one)
-    cmd = EnqueueJobCommand.new(users(:one), repo)
-    assert_equal 'ubuntu', cmd.builds[0][:base_image]
+  test 'creating and enqueuing job definition' do
+    user = User.first
 
-    conf = Config.create!(name: 'main', body: {
+    job_definition = user.job_definitions.create!(
+        name: 'test',
+
+        repo: {
+            owner: 'coldog',
+            project: 'ci-sample'
+        },
+
         build: {
-            base_image: 'ruby-2.3.0'
+            build: {
+                env: {
+                    TEST: 'true'
+                },
+                base_image: 'ubuntu',
+                before: ['echo "hello"'],
+                main: ['echo "hello from main"'],
+                after: ['echo "hello from after"'],
+                on_success: ['echo "hello from on_success"'],
+                on_failure: ['echo "hello from on_failure"'],
+            }
         }
-    })
+    )
 
-    repo.update!(config_id: conf.id)
-
-    cmd = EnqueueJobCommand.new(users(:one), repo.reload)
-    assert cmd.builds[0][:base_image].present?
-
+    res = EnqueueJobCommand.new(user, job_definition).run('master')
+    puts res
   end
 
 end

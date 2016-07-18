@@ -1,35 +1,35 @@
 class EnqueueJobCommand
-  attr_accessor :repo, :user
+  attr_accessor :job_def, :user
 
-  def initialize(user, repo)
-    @repo = repo
+  def initialize(user, job_def)
     @user = user
+    @job_def = job_def
   end
 
   def run(branch='master')
     Job.transaction do
-      next_id = repo.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
+      next_id = job_def.jobs.order(id: :desc).pluck(:job_id).first.try(:+, 1) || 1
       builds.each_with_index.map { |build, idx| enqueue(branch, build, next_id, idx) }
     end
   end
 
   def enqueue(branch, build, next_id, idx)
-    repo.jobs.create!(
-        branch: branch,
+    job_def.jobs.create!(
+        repo: job_def.repo.merge(branch: branch),
         job_id: next_id,
-        key: "#{repo.name}_#{branch.gsub('/', '-')}_#{next_id}-#{idx}",
+        key: "#{job_def.name}_#{branch.gsub('/', '-')}_#{next_id}-#{idx}",
         build: build,
         user_id: user.id,
     )
   end
 
   def ci_yml
-    @ci_yml ||= user.client.ci_yml(repo.name)
+    @ci_yml ||= user.client.ci_yml(job_def.repo_name)
   end
 
   # repo config build to merge into the project configuration
-  def repo_config_build
-    @repo_config ||= repo.config_body.try(:[], :build) || {}
+  def definition_build
+    @def_build ||= (job_def.build.try(:[], :build) || {})
   end
 
   # the array of builds to pass through, this handles building up a list of builds to pass through and
@@ -41,15 +41,15 @@ class EnqueueJobCommand
     if ci_yml
       if ci_yml[:builds].present? && ci_yml[:builds].is_a?(Array)
         ci_yml[:builds].each do |build|
-          @builds << merge_build(build, repo_config_build)
+          @builds << merge_build(build, definition_build)
         end
       else
         if ci_yml[:build].present? && ci_yml[:build].is_a?(Hash)
-          @builds << merge_build(ci_yml[:build], repo_config_build)
+          @builds << merge_build(ci_yml[:build], definition_build)
         end
       end
-    elsif repo_config_build.present?
-      @builds << repo_config_build
+    elsif definition_build.present?
+      @builds << definition_build
     end
 
     @builds
@@ -67,9 +67,9 @@ class EnqueueJobCommand
     {
         base_image: main[:base_image] || config[:base_image] || 'ubuntu',
         env: (main[:env] || {}).merge(config[:env] || {}),
-        pre_test: main[:pre_test] || config[:pre_test] || [],
-        test: main[:test] || config[:test] || [],
-        post_test: main[:post_test] || config[:post_test] || [],
+        before: main[:pre_test] || config[:pre_test] || [],
+        main: main[:test] || config[:test] || [],
+        after: main[:post_test] || config[:post_test] || [],
         on_success: main[:on_success] || config[:on_success] || [],
         on_failure: main[:on_failure] || config[:on_failure] || [],
     }

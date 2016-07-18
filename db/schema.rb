@@ -22,12 +22,13 @@ ActiveRecord::Schema.define(version: 20160718002543) do
   end
 
   create_table "job_definitions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id",    null: false
-    t.string   "name",       null: false
+    t.integer  "user_id",      null: false
+    t.string   "name",         null: false
+    t.json     "triggered_by"
     t.json     "repo"
-    t.json     "builds"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.json     "build"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.index ["user_id"], name: "index_job_definitions_on_user_id", using: :btree
   end
 
@@ -37,7 +38,7 @@ ActiveRecord::Schema.define(version: 20160718002543) do
     t.integer  "job_id",                                          null: false
     t.string   "key",                                             null: false
     t.json     "build",                                           null: false
-    t.string   "trigger_by"
+    t.json     "repo"
     t.string   "worker"
     t.boolean  "complete",                        default: false
     t.boolean  "cancelled",                       default: false
