@@ -12,7 +12,7 @@ module Api
       end
 
       def destroy
-        render json: @user.jobs.find_by!(key: params[:id]).cancel
+        render json: @user.jobs.find_by!(key: params[:id]).cancel!
       end
 
     end

@@ -5,7 +5,7 @@ class Job < ApplicationRecord
   def self.pop(worker)
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) if worker.nil?
 
-    job = Job.where(worker: nil).limit(1).update(worker: worker).first
+    job = Job.where(worker: nil, cancelled: false).limit(1).update(worker: worker).first
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) unless job
     job
   end
@@ -14,8 +14,8 @@ class Job < ApplicationRecord
     scope = all
 
     scope = scope.where(cancelled: params[:cancelled]) if params[:cancelled]
-    scope = scope.where(cancelled: params[:complete]) if params[:complete]
-    scope = scope.where(cancelled: params[:failed]) if params[:failed]
+    scope = scope.where(complete: params[:complete]) if params[:complete]
+    scope = scope.where(failed: params[:failed]) if params[:failed]
     scope = scope.joins(:job_definition).where('job_definitions.name': params[:job_family]) if params[:job_family]
 
     scope
@@ -53,6 +53,13 @@ class Job < ApplicationRecord
 
   def config_body
     repo.config.try(:body)
+  end
+
+  def cancel!
+    if worker.present?
+      minion.cancel
+    end
+    update!(cancelled: true)
   end
 
   def minion
