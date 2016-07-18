@@ -14,10 +14,13 @@ class EnqueueJobCommand
   end
 
   def enqueue(branch, build, next_id, idx)
+    key = "#{job_def.name}_#{branch.gsub('/', '-')}_#{next_id}-#{idx}"
+
     job_def.jobs.create!(
         repo: job_def.repo.merge(branch: branch),
+        stored_output_url: "https://s3-#{API_CONFIG.s3_region}.amazonaws.com/#{API_CONFIG.s3_bucket}/builds/#{key}",
         job_id: next_id,
-        key: "#{job_def.name}_#{branch.gsub('/', '-')}_#{next_id}-#{idx}",
+        key: key,
         build: build,
         user_id: user.id,
     )

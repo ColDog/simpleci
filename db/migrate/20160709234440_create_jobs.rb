@@ -9,6 +9,7 @@ class CreateJobs < ActiveRecord::Migration[5.0]
       t.json    :build,         null: false
       t.json    :repo
 
+      t.string  :stored_output_url
       t.string  :worker,        index: true
       t.boolean :complete,      default: false
       t.boolean :cancelled,     default: false

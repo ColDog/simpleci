@@ -1,7 +1,16 @@
 class MinionClient
 
-  def initialize(url)
+  def initialize(url, job=nil)
     @url = url
+    @job = job
+  end
+
+  def output_url
+    if @job.complete
+      "https://s3-#{API_CONFIG.s3_region}.amazonaws.com/#{API_CONFIG.s3_bucket}/builds/#{@job.repo[:owner]}/#{@job.repo[:name]}/#{@job.key}"
+    elsif @job.worker.present?
+      "#{@job.worker}/current-state"
+    end
   end
 
   def cancel
