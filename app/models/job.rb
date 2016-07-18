@@ -11,6 +11,8 @@ class Job < ApplicationRecord
   end
 
   def self.query(params)
+    return all unless params
+
     scope = all
 
     scope = scope.where(cancelled: params[:cancelled]) if params[:cancelled]

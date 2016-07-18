@@ -1,0 +1,15 @@
+build_one:
+  triggered_by:
+    - test.stuff.*
+  repo:
+    owner: coldog
+    project: sample-ci
+  build: {}
+
+build_two:
+  triggered_by:
+    - test.stuff.*
+  repo:
+    owner: coldog
+    project: sample-ci
+  build: {}

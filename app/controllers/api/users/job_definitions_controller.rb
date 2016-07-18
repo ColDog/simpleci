@@ -12,11 +12,11 @@ module Api
       end
 
       def create
-        render json: @user.job_definitions.create!(safe_params)
+        render json: @user.job_definitions.find_or_update_by!({name: safe_params[:name]}, safe_params)
       end
 
       def update
-        render json: @user.job_definitions.find_by!(name: params[:id]).update!(safe_params)
+        create
       end
 
       private

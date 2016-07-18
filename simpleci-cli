@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+
+require 'trollop'
+require 'faraday'
+require 'json'
+require 'terminal-table'
+require 'yaml'
+
+
+def opts
+  @opts ||= Trollop::options do
+    opt :server, 'server endpoint', type: :string, default: 'http://localhost:3000', short: '-s'
+    opt :client_id, 'server client id', type: :string, default: ENV['SIMPLECI_KEY'], short: '-u'
+    opt :secret, 'server client secret', type: :string, default: ENV['SIMPLECI_SECRET'], short: '-p'
+    opt :user, 'user to represent', type: :string, default: 'me', short: '-a'
+    opt :payload, 'payload for events', type: :string, default: 'me', short: '-b'
+    opt :event_name, 'event name for events', type: :string, default: 'event', short: '-n'
+    opt :jobs_definition_file, 'file for applying job definitions', type: :string, default: 'builds.yml', short: '-f'
+  end
+end
+
+def conn
+  @conn ||= Faraday.new(url: opts[:server]) do |faraday|
+    faraday.request  :url_encoded             # form-encode POST params
+    faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+    faraday.headers['Authorization'] = "#{opts[:client_id]}:#{opts[:secret]}"
+  end
+end
+
+def req(method, path, params={})
+  res = conn.send(method, path, params)
+  body = JSON.parse(res.body)
+  # puts body
+  body
+end
+
+def req_user(method, path, params={})
+  req(method, "/api/users/#{opts[:user]}/#{path}", params)
+end
+
+def print_table(args=[])
+  args = [args] unless args.is_a?(Array)
+
+  keys = args[0].map { |k, _| k }
+  rows = [keys] + args.map { |h| h.values_at(*keys) }
+  puts Terminal::Table.new(rows: rows)
+end
+
+def main(cmd)
+
+  case cmd
+    when 'me'
+      print_table(req(:get, '/api/users/me')['user'])
+
+    when 'users'
+      print_table(req(:get, '/api/users')['users'])
+
+    when 'jobs'
+      print_table(req(:get, '/api/users/me/jobs')['jobs'])
+
+    when 'job_definitions'
+      print_table(req(:get, '/api/users/me/job_definitions')['job_definitions'])
+
+    when 'emit'
+      req_user(:post, 'events', { event: { payload: JSON.parse(opts[:payload]), name: opts[:event_name] } })
+
+    when 'apply'
+      created = []
+      builds = YAML.load_file(opts[:jobs_definition_file])
+      builds.each do |name, config|
+        job = config.merge(name: name)
+        created << req_user(:post, 'job_definitions', job_definition: job)['job_definition']
+      end
+      print_table(created)
+
+    when 'generate-key'
+      print_table(req_user(:post, 'tokens')['token'])
+
+  end
+end
+
+if ARGV.empty? || opts[:help]
+  opts
+  Trollop::educate
+end
+main(ARGV[0])

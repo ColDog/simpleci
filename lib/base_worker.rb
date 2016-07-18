@@ -57,7 +57,7 @@ class BaseWorker
           end
         end
 
-        if count >= max_count
+        if max_count && count >= max_count
           quit
           return
         end
