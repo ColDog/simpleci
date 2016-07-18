@@ -2,6 +2,17 @@ class Job < ApplicationRecord
   belongs_to :user
   belongs_to :job_definition
 
+  after_update do
+    if self.complete
+      Event.emit(user, "jobs:completed:#{key}", {
+          job_family: job_family,
+          job_definition: job_definition.id,
+          job: job.id,
+          state: state
+      })
+    end
+  end
+
   def self.pop(worker)
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) if worker.nil?
 

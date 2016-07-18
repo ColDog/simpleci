@@ -1,5 +1,5 @@
 class JobMinionSerializer < ActiveModel::Serializer
-  attributes :id, :key, :build, :repo
+  attributes :id, :key, :job_family, :build, :repo
 
   # The golang struct this must serialize into
   # type Build struct  {
