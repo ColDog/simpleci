@@ -4,26 +4,22 @@ Rails.application.routes.draw do
     resources :jobs,      only: [:create, :update]
   end
 
-  resources :repos do
-    resources :jobs, controller: 'repos/jobs', only: [:create, :update, :index, :show] do
-      get '/output' => 'repos/jobs#output'
+  namespace :api do
+    resources :users do
+      resources :job_definitions, controller: 'users/job_definitions'
+      resources :jobs,            controller: 'users/jobs'
+
+      get 'account/sync'   => 'users/accounts#sync'
+      get 'account/teams'  => 'users/accounts#teams'
+      get 'account/repos'  => 'users/accounts#repos'
+      get 'account/repos'  => 'users/accounts#repos'
     end
 
-    get '/branches' => 'repos/info#branches'
+    get 'current' => 'users#current'
   end
 
-  resources :accounts do
-    resources :configs,     controller: 'accounts/configs'
-    resources :repos,       controller: 'accounts/repos'
+  namespace :auth do
+    get   ':provider/callback'  => 'sessions#create'
   end
 
-  # routes from the current user
-  post  '/user/sync'                => 'users#sync'
-  get   '/user/teams'               => 'users#teams'
-  get   '/user'                     => 'users#current'
-
-  get   '/auth/:provider/callback'  => 'sessions#create'
-
-  post  '/hooks/github'             => 'hooks#github'
-  post  '/hooks/bitbucket'          => 'hooks#bitbucket'
 end

@@ -7,6 +7,7 @@ class CreateJobs < ActiveRecord::Migration[5.0]
       t.integer :job_id,        unique: true, null: false, index: true
       t.string  :key,           unique: true, index: true, null: false
       t.json    :build,         null: false
+      t.json    :triggered_by
 
       t.string  :worker,        index: true
       t.boolean :complete,      default: false

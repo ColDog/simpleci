@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20160717234504) do
     t.integer  "job_id",                                          null: false
     t.string   "key",                                             null: false
     t.json     "build",                                           null: false
+    t.string   "trigger_by"
     t.string   "worker"
     t.boolean  "complete",                        default: false
     t.boolean  "cancelled",                       default: false
