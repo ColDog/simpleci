@@ -71,11 +71,15 @@ class EnqueueJobCommand
         base_image: main[:base_image] || config[:base_image] || 'ubuntu',
         base_build: main[:base_build] || config[:base_build],
         env: (main[:env] || {}).merge(config[:env] || {}),
+        setup: main[:setup] || config[:setup] || [],
         before: main[:pre_test] || config[:pre_test] || [],
         main: main[:test] || config[:test] || [],
         after: main[:post_test] || config[:post_test] || [],
         on_success: main[:on_success] || config[:on_success] || [],
         on_failure: main[:on_failure] || config[:on_failure] || [],
+        post: main[:post] || config[:post] || [],
+        post_success: main[:post_success] || config[:post_success] || [],
+        post_failure: main[:post_failure] || config[:post_failure] || [],
     }
   end
 
