@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   namespace :minions do
-    resources :jobs,      only: [:create, :update]
+    resources :jobs,      only: [:index, :create, :update]
   end
 
   namespace :api do

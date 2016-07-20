@@ -67,6 +67,7 @@ class EnqueueJobCommand
   # - on_failure    -> if present, main, else default
   def merge_build(main, config)
     {
+        services: (config[:services] || {}).merge(main[:services] || {}),
         base_image: main[:base_image] || config[:base_image] || 'ubuntu',
         env: (main[:env] || {}).merge(config[:env] || {}),
         before: main[:pre_test] || config[:pre_test] || [],

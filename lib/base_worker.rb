@@ -44,6 +44,9 @@ class BaseWorker
             raise e
 
           rescue Exception => e
+            Rails.logger.warn e.message
+            Rails.logger.warn e.backtrace
+
             if current.attempts > max_attempts
               current.update(failed: true)
             else
@@ -55,14 +58,16 @@ class BaseWorker
             end
 
           end
+
+        else
+
+          sleep(poll_time)
         end
 
         if max_count && count >= max_count
           quit
           return
         end
-
-        sleep(poll_time)
       end
 
     rescue Exception => e

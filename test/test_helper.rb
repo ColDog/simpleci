@@ -20,6 +20,18 @@ class ActiveSupport::TestCase
         },
 
         build: {
+            services: {
+                mysql: {
+                    image: 'mysql:5.7',
+                    env: {
+                        ROOT_PASS: 'pass'
+                    },
+                    on_startup: [
+                        'echo "hello from mysql"'
+                    ]
+                }
+            },
+
             build: {
                 env: {
                     TEST: 'true'

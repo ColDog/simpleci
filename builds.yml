@@ -3,13 +3,21 @@ build_one:
     - test.stuff.*
   repo:
     owner: coldog
-    project: sample-ci
-  build: {}
+    project: ci-sample
+    provider: github
 
-build_two:
-  triggered_by:
-    - test.stuff.*
-  repo:
-    owner: coldog
-    project: sample-ci
-  build: {}
+  build:
+    build:
+
+      services:
+        mysql:
+          image: 'mysql:5.7'
+          env:
+            MYSQL_ROOT_PASSWORD: pass
+
+
+      base_image: ubuntu
+      env:
+        TEST: stuff
+        TEST_1: things
+        TEST_2: things2

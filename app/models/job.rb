@@ -4,10 +4,10 @@ class Job < ApplicationRecord
 
   after_update do
     if self.complete
-      Event.emit(user, "jobs:completed:#{key}", {
+      Event.emit(user, "jobs:#{state}:#{key}", {
           job_family: job_family,
           job_definition: job_definition.id,
-          job: job.id,
+          job: key,
           state: state
       })
     end
@@ -19,6 +19,10 @@ class Job < ApplicationRecord
     job = Job.where(worker: nil, cancelled: false).limit(1).update(worker: worker).first
     raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) unless job
     job
+  end
+
+  def self.peek
+    Job.where(worker: nil, cancelled: false).limit(1).first!
   end
 
   def self.query(params)
@@ -39,7 +43,7 @@ class Job < ApplicationRecord
   end
 
   def build
-    super.try(:symbolize_keys)
+    super.try(:deep_symbolize_keys!)
   end
 
   def output_url
@@ -86,6 +90,11 @@ class Job < ApplicationRecord
   def build_for_minion
     val = build
     val[:env] = val[:env].map { |k, v| "#{k}=#{v}" }
+    val[:services].each do |k, v|
+      if v[:env]
+        val[:services][k][:env] = val[:services][k][:env].map { |k1, v1| "#{k1}=#{v1}" }
+      end
+    end
     val
   end
 

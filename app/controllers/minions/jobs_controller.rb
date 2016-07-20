@@ -1,5 +1,9 @@
 class Minions::JobsController < ApplicationController
 
+  def index
+    render json: Job.peek, serializer: JobMinionSerializer
+  end
+
   def create
     render json: Job.pop(params[:worker]), serializer: JobMinionSerializer
   end

@@ -30,7 +30,7 @@ end
 def req(method, path, params={})
   res = conn.send(method, path, params)
   body = JSON.parse(res.body)
-  # puts body
+  puts body
   body
 end
 

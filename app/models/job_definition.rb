@@ -19,7 +19,7 @@ class JobDefinition < ApplicationRecord
   end
 
   def repo_name
-    repo[:name] || name
+    repo[:project] || name
   end
 
   def repo_owner
