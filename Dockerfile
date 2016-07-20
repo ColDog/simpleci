@@ -24,4 +24,4 @@ COPY . .
 RUN bundle install
 
 EXPOSE 3000
-CMD ["irb"]
+ENTRYPOINT ["irb"]
