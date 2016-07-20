@@ -19,11 +19,11 @@ build_one:
           on_startup:
             - 'while ! mysql -u root --password=pass -e "select 1" ; do sleep 2; echo "waiting for mysql" ; done'
 
-      base_image: ruby:2.3
+      base_build: .
 
       env:
         DB_HOST: mysql
-        DB_USER: dbuser
+        DB_USER: root
         DB_PASS: pass
 
       before:
