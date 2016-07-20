@@ -23,4 +23,9 @@ build_one:
         DB_USER: root
         DB_PASS: pass
 
+      before:
+        - 'bin/rails db:create'
+        - 'bin/rails db:migrate'
 
+      main:
+        - 'bin/rails test'
