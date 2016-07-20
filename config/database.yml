@@ -2,17 +2,17 @@ default: &default
   adapter: mysql2
   pool: 5
   timeout: 5000
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASS'] %>
+
 
 development:
   <<: *default
-  database: simpleci_dev
+  database: <%= ENV['DB_NAME'] || 'simpleci_dev' %>
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: simpleci_test
+  database: <%= ENV['DB_NAME'] || 'simpleci_test' %>
 
 production:
   <<: *default

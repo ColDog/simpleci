@@ -3,7 +3,7 @@ build_one:
     - test.stuff.*
   repo:
     owner: coldog
-    project: ci-sample
+    project: simpleci
     provider: github
 
   build:
@@ -16,8 +16,11 @@ build_one:
             MYSQL_ROOT_PASSWORD: pass
 
 
-      base_image: ubuntu
+      base_image: ruby:2.3
+
       env:
-        TEST: stuff
-        TEST_1: things
-        TEST_2: things2
+        DB_HOST: mysql
+        DB_USER: root
+        DB_PASS: pass
+
+
