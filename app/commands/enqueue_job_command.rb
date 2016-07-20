@@ -69,6 +69,7 @@ class EnqueueJobCommand
     {
         services: (config[:services] || {}).merge(main[:services] || {}),
         base_image: main[:base_image] || config[:base_image] || 'ubuntu',
+        base_build: main[:base_build] || config[:base_build],
         env: (main[:env] || {}).merge(config[:env] || {}),
         before: main[:pre_test] || config[:pre_test] || [],
         main: main[:test] || config[:test] || [],
