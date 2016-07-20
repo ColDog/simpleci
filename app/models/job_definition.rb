@@ -2,6 +2,14 @@ class JobDefinition < ApplicationRecord
   belongs_to  :user
   has_many    :jobs
 
+  def state
+    jobs.last.try(:state)
+  end
+
+  def last_build
+    jobs.last.try(:key)
+  end
+
   # REPO should have the following structure
   # name: <repository name>
   # owner: <repository owner>

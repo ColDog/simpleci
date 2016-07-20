@@ -13,9 +13,6 @@ def opts
     opt :client_id, 'server client id', type: :string, default: ENV['SIMPLECI_KEY'], short: '-u'
     opt :secret, 'server client secret', type: :string, default: ENV['SIMPLECI_SECRET'], short: '-p'
     opt :user, 'user to represent', type: :string, default: 'me', short: '-a'
-    opt :payload, 'payload for events', type: :string, default: 'me', short: '-b'
-    opt :event_name, 'event name for events', type: :string, default: 'event', short: '-n'
-    opt :jobs_definition_file, 'file for applying job definitions', type: :string, default: 'builds.yml', short: '-f'
   end
 end
 
@@ -30,7 +27,7 @@ end
 def req(method, path, params={})
   res = conn.send(method, path, params)
   body = JSON.parse(res.body)
-  puts body
+  # puts body
   body
 end
 
@@ -56,13 +53,40 @@ def main(cmd)
       print_table(req(:get, '/api/users')['users'])
 
     when 'jobs'
-      print_table(req(:get, '/api/users/me/jobs')['jobs'])
-
-    when 'job_definitions'
       print_table(req(:get, '/api/users/me/job_definitions')['job_definitions'])
 
     when 'emit'
-      req_user(:post, 'events', { event: { payload: JSON.parse(opts[:payload]), name: opts[:event_name] } })
+      events ||= Trollop::options do
+        opt :event, 'event name', type: :string, short: '-n'
+        opt :payload, 'payload for event', type: :string, short: '-p'
+      end
+
+      if events[:event] && events[:payload]
+        req_user(:post, 'events', { event: { payload: JSON.parse(events[:payload]), name: events[:event] } })
+      else
+        Trollop::educate
+      end
+
+    when 'secrets'
+      req_user(:get, 'secrets')
+
+    when 'provision-secrets'
+      req_user(:get, 'secrets')['secrets'].each do |secret|
+        puts "export #{secret['key']}=#{secret['value']}"
+      end
+
+    when 'add-secret'
+      secrets ||= Trollop::options do
+        opt :secret, 'secret to store', type: :string, short: '-n'
+        opt :value, 'value to store', type: :string, short: '-v'
+      end
+
+      if secrets[:secret] && secrets[:value]
+        req_user(:post, 'secrets', { secret: {key: secrets[:secret], value: secrets[:value] } })
+      else
+        Trollop::educate
+      end
+
 
     when 'apply'
       created = []
@@ -79,7 +103,7 @@ def main(cmd)
   end
 end
 
-if ARGV.empty? || opts[:help]
+if ARGV.empty?
   opts
   Trollop::educate
 end

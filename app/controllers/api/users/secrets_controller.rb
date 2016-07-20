@@ -15,6 +15,10 @@ module Api
         render json: @user.secrets.create!(safe_params)
       end
 
+      def destroy
+        render json: @user.secrets.find_by!(key: params[:id]).destroy!
+      end
+
       private
       def safe_params
         params.require(:secret).permit(:key, :value)
