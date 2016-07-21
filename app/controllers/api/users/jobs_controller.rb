@@ -4,7 +4,7 @@ module Api
       before_action :set_base_user
 
       def index
-        render json: @user.jobs.query(params[:query]).page(params[:page]).per(params[:per_page])
+        render json: @user.jobs.query(params[:query]).page(params[:page]).per(params[:per_page]).order(id: :desc)
       end
 
       def show

@@ -10,6 +10,10 @@ class JobDefinition < ApplicationRecord
     jobs.last.try(:key)
   end
 
+  def last_job
+    jobs.last
+  end
+
   # REPO should have the following structure
   # name: <repository name>
   # owner: <repository owner>

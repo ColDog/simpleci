@@ -1,16 +1,17 @@
 module Api
   class UsersController < ApiController
+    before_action :set_base_user, only: [:sync, :teams, :users]
 
     def sync
-      render json: current_user.sync
+      render json: @user.sync
     end
 
     def teams
-      render json: current_user.client.teams
+      render json: {teams: @user.client.teams}
     end
 
-    def index
-      render json: current_user.users
+    def users
+      render json: @user.users
     end
 
     def show

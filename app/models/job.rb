@@ -33,7 +33,9 @@ class Job < ApplicationRecord
     scope = scope.where(cancelled: params[:cancelled]) if params[:cancelled]
     scope = scope.where(complete: params[:complete]) if params[:complete]
     scope = scope.where(failed: params[:failed]) if params[:failed]
+
     scope = scope.joins(:job_definition).where('job_definitions.name': params[:job_family]) if params[:job_family]
+    scope = scope.where(job_definition_id: params[:job_definition_id]) if params[:job_definition_id]
 
     scope
   end

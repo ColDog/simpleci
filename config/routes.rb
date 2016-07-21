@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :secrets,         controller: 'users/secrets',          only: [:create, :destroy, :index]
 
       post  'sync'
+      get   'users'
       get   'teams'
       get   'repos'
     end
