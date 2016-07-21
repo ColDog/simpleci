@@ -27,8 +27,6 @@ build_one:
         DB_PASS: pass
 
       before:
-        - 'gem install bundler'
-        - 'bundle install'
         - 'bin/rails db:create'
         - 'bin/rails db:migrate'
 

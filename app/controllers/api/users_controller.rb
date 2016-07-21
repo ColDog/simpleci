@@ -6,7 +6,7 @@ module Api
     end
 
     def teams
-      render json: current_user.teams
+      render json: current_user.client.teams
     end
 
     def index

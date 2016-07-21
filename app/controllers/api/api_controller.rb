@@ -20,11 +20,21 @@ module Api
     end
 
     def current_user
-      @current_user ||= Token.user_from_token(token[0], token[1])
+      if @current_user
+        return @current_user
+      end
+
+      if token
+        @current_user = Token.user_from_token(token[0], token[1])
+      elsif session[:user_id]
+        @current_user = User.find_by(id: session[:user_id])
+      end
+
+      @current_user
     end
 
     def token
-      @token ||= request.headers['Authorization'].split(':')
+      @token ||= request.headers['Authorization'].try(:split, ':')
     end
 
     private

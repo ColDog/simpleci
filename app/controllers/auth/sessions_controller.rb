@@ -3,7 +3,7 @@ class Auth::SessionsController < ActionController::API
   def create
     user = User.from_omniauth(auth_hash)
     session[:user_id] = user.id
-    render json: user
+    redirect_to 'http://localhost:5000'
   end
 
   def destroy

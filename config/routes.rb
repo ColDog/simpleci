@@ -5,12 +5,12 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    resources :users do
+    resources :users, only: [:show] do
       resources :job_definitions, controller: 'users/job_definitions'
       resources :jobs,            controller: 'users/jobs'
       resources :events,          controller: 'users/events',           only: [:create, :destroy, :index, :show]
       resources :tokens,          controller: 'users/tokens',           only: [:create, :destroy, :index]
-      resources :secrets,         controller: 'users/secrets',           only: [:create, :destroy, :index]
+      resources :secrets,         controller: 'users/secrets',          only: [:create, :destroy, :index]
 
       post  'sync'
       get   'teams'
@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   end
 
   namespace :auth do
+    get   '/' => 'sessions#index'
     get   ':provider/callback'  => 'sessions#create'
   end
 
