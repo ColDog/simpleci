@@ -12,7 +12,13 @@ module Api
       end
 
       def create
-        render json: @user.secrets.create!(safe_params)
+        secret = @user.secrets.find_by(key: safe_params[:key])
+        if secret
+          secret.update!(safe_params)
+        else
+          secret = @user.secrets.create!(safe_params)
+        end
+        render json: secret
       end
 
       def destroy
