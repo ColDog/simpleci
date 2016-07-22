@@ -16,7 +16,7 @@ class Minions::JobsController < ApplicationController
 
   protected
   def safe_params
-    params.permit(:complete, :cancelled, :failed, :failure)
+    params.permit(:complete, :cancelled, :failed, :failure, :info)
   end
 
   def authenticate

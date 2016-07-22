@@ -8,6 +8,7 @@ class CreateJobs < ActiveRecord::Migration[5.0]
       t.string  :key,           unique: true, index: true, null: false
       t.json    :build,         null: false
       t.json    :repo
+      t.json    :info
 
       t.string  :stored_output_url
       t.string  :worker,        index: true

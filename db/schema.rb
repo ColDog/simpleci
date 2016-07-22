@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20160720142507) do
     t.string   "key",                                             null: false
     t.json     "build",                                           null: false
     t.json     "repo"
+    t.json     "info"
     t.string   "stored_output_url"
     t.string   "worker"
     t.boolean  "complete",                        default: false
@@ -84,6 +85,7 @@ ActiveRecord::Schema.define(version: 20160720142507) do
     t.string   "secret",     null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_tokens_on_key", using: :btree
     t.index ["user_id"], name: "index_tokens_on_user_id", using: :btree
   end
 
