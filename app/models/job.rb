@@ -14,11 +14,9 @@ class Job < ApplicationRecord
   end
 
   def self.pop(worker)
-    raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) if worker.nil?
+    return nil if worker.nil?
 
-    job = Job.where(worker: nil, cancelled: false).limit(1).update(worker: worker).first
-    raise ActiveRecord::RecordNotFound.new('Could not pop a job', Job, :id, nil) unless job
-    job
+    Job.where(worker: nil, cancelled: false).limit(1).update(worker: worker).first
   end
 
   def self.peek

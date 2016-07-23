@@ -5,7 +5,12 @@ class Minions::JobsController < ApplicationController
   end
 
   def create
-    render json: Job.pop(params[:worker]), serializer: JobMinionSerializer
+    job = Job.pop(params[:worker])
+    if job
+      render json: job, serializer: JobMinionSerializer
+    else
+      render json: {error: 'No Job Found'}, status: :not_found
+    end
   end
 
   def update
@@ -16,15 +21,7 @@ class Minions::JobsController < ApplicationController
 
   protected
   def safe_params
-    params.permit(:complete, :cancelled, :failed, :failure, :info)
-  end
-
-  def authenticate
-    unauthorized! unless secret == params[:token]
-  end
-
-  def secret
-    Rails.application.secrets[:secret_key_base]
+    params.permit(:complete, :cancelled, :failed, :failure, :info, :stored_output_url)
   end
 
 end

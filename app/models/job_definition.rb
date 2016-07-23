@@ -19,11 +19,11 @@ class JobDefinition < ApplicationRecord
   # owner: <repository owner>
   # provider: <repository provider (github)>
   def repo
-    (super || {}).symbolize_keys
+    (super || {}).deep_symbolize_keys
   end
 
   def build
-    (super || {}).symbolize_keys
+    (super || {}).deep_symbolize_keys
   end
 
   def triggered_by

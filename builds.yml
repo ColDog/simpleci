@@ -32,3 +32,20 @@ build_one:
 
       main:
         - 'bin/rails test'
+
+long_build:
+  triggered_by:
+      - long.*
+  repo:
+    owner: coldog
+    project: ci-sample
+    provider: github
+
+  build:
+    build:
+      env:
+        TEST: true
+
+      setup:
+        - 'apt-get update && apt-get install -y curl && apt-get clean'
+        - '$( simpleci provision-secrets )'
