@@ -2,6 +2,14 @@ require 'test_helper'
 
 class ApiTest < ActionDispatch::IntegrationTest
 
+  test 'minion authorization' do
+    test_user = User.first
+
+    get '/api/users/me', headers: { Authorization: "minion:secret.#{test_user.id}" }
+    assert_response :success
+    assert_equal 'coldog', JSON.parse(response.body)['user']['username']
+  end
+
   test 'basic authorization' do
     get '/api/users/me', headers: { Authorization: 'test:secret' }
     assert_response :success
