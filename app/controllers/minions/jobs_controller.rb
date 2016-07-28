@@ -1,4 +1,5 @@
 class Minions::JobsController < ApplicationController
+  before_action :authenticate
 
   def index
     render json: Job.peek, serializer: JobMinionSerializer

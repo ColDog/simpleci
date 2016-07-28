@@ -53,6 +53,12 @@ class EnqueueJobsTest < ActionDispatch::IntegrationTest
     assert_difference 'Job.count', +1 do
       EventWorker.run_one_job
     end
+
+    Job.peek
+
+    # minion does the job
+    post '/minions/jobs', params: {worker: 'stuff'}, headers: { Authorization: 'minion:secret' }
+    assert_response :success
   end
 
 end

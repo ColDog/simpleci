@@ -90,9 +90,11 @@ class Job < ApplicationRecord
   def build_for_minion
     val = build
     val[:env] = val[:env].map { |k, v| "#{k}=#{v}" }
-    val[:services].each do |k, v|
-      if v[:env]
-        val[:services][k][:env] = val[:services][k][:env].map { |k1, v1| "#{k1}=#{v1}" }
+    if val[:services]
+      val[:services].each do |k, v|
+        if v[:env]
+          val[:services][k][:env] = val[:services][k][:env].map { |k1, v1| "#{k1}=#{v1}" }
+        end
       end
     end
     val

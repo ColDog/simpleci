@@ -1,6 +1,7 @@
 build_one:
   triggered_by:
-    - test.stuff.*
+    - test.*
+
   repo:
     owner: coldog
     project: simpleci
@@ -27,25 +28,9 @@ build_one:
         DB_PASS: pass
 
       before:
-        - 'bin/rails db:create'
-        - 'bin/rails db:migrate'
+        - 'pwd'
+        - 'docker exec -i main rails db:create'
+        - 'docker exec -i main rails db:migrate'
 
       main:
-        - 'bin/rails test'
-
-long_build:
-  triggered_by:
-      - long.*
-  repo:
-    owner: coldog
-    project: ci-sample
-    provider: github
-
-  build:
-    build:
-      env:
-        TEST: true
-
-      setup:
-        - 'apt-get update && apt-get install -y curl && apt-get clean'
-        - '$( simpleci provision-secrets )'
+        - 'docker exec -i main rails test'

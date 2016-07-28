@@ -17,7 +17,11 @@ module AuthorizationHelper
       if token[0] == 'minion'
         spl = token[1].split('.')
         if spl[0] == minion_key
-          @current_user = User.find_by(id: spl[1])
+          if spl[1].present?
+            @current_user = User.find_by(id: spl[1])
+          else
+            @current_user = true
+          end
         end
       else
         @current_user = Token.user_from_token(token[0], token[1])
@@ -26,6 +30,7 @@ module AuthorizationHelper
       @current_user = User.find_by(id: session[:user_id])
     end
 
+    logger.info("current user: #{@current_user}")
     @current_user
   end
 

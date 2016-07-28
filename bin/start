@@ -2,4 +2,4 @@
 
 rails db:create
 rails db:migrate
-rails s -p ${PORT}
+bundle exec rails s -p ${PORT}
