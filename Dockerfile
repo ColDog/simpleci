@@ -14,7 +14,7 @@ RUN ruby -v
 RUN gem install bundler --no-ri --no-rdoc
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN bundle install
+RUN bundle install --without development test
 
 # copy over the application
 COPY . .
