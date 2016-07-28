@@ -29,7 +29,7 @@ build_one:
         DB_PASS: pass
 
       before:
-        - 'sleep 15'
+        - 'docker logs main'
         - 'docker exec -i main rails db:create'
         - 'docker exec -i main rails db:migrate'
 
