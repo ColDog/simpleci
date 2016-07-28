@@ -23,12 +23,13 @@ build_one:
       base_build: .
 
       env:
+        PORT: 3000
         DB_HOST: mysql
         DB_USER: root
         DB_PASS: pass
 
       before:
-        - 'pwd'
+        - 'sleep 15'
         - 'docker exec -i main rails db:create'
         - 'docker exec -i main rails db:migrate'
 
