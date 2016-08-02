@@ -60,9 +60,9 @@ class EnqueueJobCommand
   # merged build attributes
   # - base_image    -> in repo config overrides main
   # - env           -> variables are merged together, main takes precedence
-  # - pre_test      -> if present, main, else default
-  # - test          -> if present, main, else default
-  # - post_test     -> if present, main, else default
+  # - before        -> if present, main, else default
+  # - main          -> if present, main, else default
+  # - after         -> if present, main, else default
   # - on_success    -> if present, main, else default
   # - on_failure    -> if present, main, else default
   def merge_build(main, config)

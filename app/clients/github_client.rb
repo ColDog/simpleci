@@ -11,6 +11,10 @@ class GithubClient
     end
   end
 
+  def repo(repo)
+    req(:get, "/repos/#{@username}/#{repo}")
+  end
+
   def branches(repo)
     req_cached(:get, "/repos/#{@username}/#{repo}/branches")
   end
@@ -27,9 +31,9 @@ class GithubClient
 
   def register_webhook(repo)
     req(:post, "/repos/#{@username}/#{repo}/hooks", {
-        name: "cisimple-hook-#{repo}",
+        name: "simpleci-hook-#{repo}",
         active: true,
-        events: ['push'],
+        events: %w(push pull_request),
         config: {
             url: "#{BASE_URL}/hooks/github",
             content_type: 'json'

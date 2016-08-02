@@ -1,4 +1,5 @@
-build_one:
+simpleci:
+
   triggered_by:
     - test.*
 
@@ -28,10 +29,9 @@ build_one:
         DB_USER: root
         DB_PASS: pass
 
-      before:
-        - 'docker logs main'
-        - 'docker exec -i main rails db:create'
-        - 'docker exec -i main rails db:migrate'
-
       main:
+        - 'docker logs main'
         - 'docker exec -i main rails test'
+
+      after:
+        - 'docker logs main'

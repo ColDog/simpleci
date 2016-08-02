@@ -14,12 +14,11 @@ RUN ruby -v
 RUN gem install bundler --no-ri --no-rdoc
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN bundle install --without development test
+RUN bundle install
 
 # copy over the application
 COPY . .
 
-RUN bundle install
 
 EXPOSE 3000
 CMD ["bin/start"]

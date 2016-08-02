@@ -2,6 +2,9 @@ class JobDefinition < ApplicationRecord
   belongs_to  :user
   has_many    :jobs
 
+  validates_presence_of :name
+  validates :repo_exists
+
   def state
     jobs.last.try(:state)
   end
@@ -36,6 +39,12 @@ class JobDefinition < ApplicationRecord
 
   def repo_owner
     repo[:owner]
+  end
+
+  def repo_exists
+    if repo_name
+      errors.add(:repo, 'Does not exist') unless user.client.repo(repo_name)[:id].present?
+    end
   end
 
 end

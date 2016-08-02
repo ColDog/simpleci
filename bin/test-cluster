@@ -3,7 +3,16 @@
 docker network create simpleci-net
 docker build -t simpleci .
 
-docker run -i -d \
+x=$( docker inspect -f {{.State.Running}} simpleci_db )
+
+echo $x
+
+if [ $x = "true" ];
+then
+    echo "db already running";
+else
+    docker rm -f simpleci_db
+    docker run -i -d \
     -e MYSQL_USER=dbuser \
     -e MYSQL_PASSWORD=pass \
     -e MYSQL_ROOT_PASSWORD=pass \
@@ -12,12 +21,15 @@ docker run -i -d \
     --net-alias simpleci_db \
     --name simpleci_db \
     mysql:5.7
+fi
 
-#sleep 45
+if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; }; fi
 
-docker stop simpleci
-docker rm simpleci
-docker run -i \
+docker exec -it simpleci_db /bin/bash -c 'while ! mysql -u root --password=pass -e "select 1" ; do sleep 2; echo "waiting for mysql" ; done'
+if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; }; fi
+
+docker rm -f simpleci
+docker run -i -d \
     -e DB_HOST=simpleci_db \
     -e RAILS_ENV=production \
     -e SECRET_KEY_BASE=secret \
@@ -31,7 +43,9 @@ docker run -i \
     --net-alias simpleci \
     -p 3000:3000 \
     simpleci
+if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; }; fi
 
+docker rm -f simpleci-worker
 docker run -i -d \
     -e DB_HOST=simpleci_db \
     -e RAILS_ENV=production \
@@ -46,12 +60,12 @@ docker run -i -d \
     --net-alias simpleci-worker \
     simpleci \
     rails worker:events
+if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; }; fi
 
-sleep 5
+sleep 15
 
-docker stop minion1
-docker rm minion1
-docker run -i \
+docker rm -f minion1
+docker run -i -d \
     -e MINION_AWS_ACCESS_KEY=$AWS_ACCESS_KEY_ID \
     -e MINION_AWS_SECRET_KEY=$AWS_SECRET_KEY_ID \
     -e SIMPLECI_API=http://simpleci:3000 \
