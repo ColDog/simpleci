@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker build -t coldog/simpleci:latest .
+docker push coldog/simpleci:latest
