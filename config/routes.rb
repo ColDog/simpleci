@@ -24,4 +24,9 @@ Rails.application.routes.draw do
     get   ':provider/callback'  => 'sessions#create'
   end
 
+  namespace :hooks do
+    resources :bitbucket, only: :create
+    resources :github,    only: :create
+  end
+
 end

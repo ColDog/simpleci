@@ -30,12 +30,12 @@ class GithubClient
   end
 
   def register_webhook(repo)
-    req(:post, "/repos/#{@username}/#{repo}/hooks", {
-        name: "simpleci-hook-#{repo}",
+    post_json("/repos/#{@username}/#{repo}/hooks", {
+        name: 'web',
         active: true,
         events: %w(push pull_request),
         config: {
-            url: "#{BASE_URL}/hooks/github",
+            url: "#{API_CONFIG.base_url}/hooks/github",
             content_type: 'json'
         }
     })
@@ -46,6 +46,15 @@ class GithubClient
   def req(method, url, params={})
     puts "#{method}  https://api.github.com/#{url}"
     res = conn.send(method, url, params)
+    JSON.parse(res.body)
+  end
+
+  def post_json(url, payload)
+    res = conn.post do |req|
+      req.url url
+      req.headers['Content-Type'] = 'application/json'
+      req.body = JSON.generate(payload)
+    end
     JSON.parse(res.body)
   end
 

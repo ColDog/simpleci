@@ -3,7 +3,7 @@ class JobDefinition < ApplicationRecord
   has_many    :jobs
 
   validates_presence_of :name
-  validates :repo_exists
+  validate :repo_exists
 
   def state
     jobs.last.try(:state)

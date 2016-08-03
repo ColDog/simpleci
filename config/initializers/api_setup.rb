@@ -18,7 +18,7 @@ class AppConfig
   def initialize
     @s3_region = ENV['S3_REGION'] || 'us-west-2'
     @s3_bucket = ENV['S3_BUCKET'] || 'simplecistorage'
-    @base_url = ENV['BASE_URL'] || 'http://localhost:5000'
+    @base_url = ENV['BASE_URL'] || 'http://localhost:3000'
   end
 end
 
