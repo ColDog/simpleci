@@ -29,4 +29,5 @@ Rails.application.routes.draw do
     resources :github,    only: :create
   end
 
+  get '/health' => 'health#index'
 end
