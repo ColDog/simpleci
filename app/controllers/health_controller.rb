@@ -1,7 +1,7 @@
 class HealthController < ActionController::API
 
   def index
-    render text: "ok\n", status: :ok
+    render plain: "ok\n", status: :ok
   end
 
 end
